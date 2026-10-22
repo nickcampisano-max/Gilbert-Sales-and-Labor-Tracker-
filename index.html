@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clever Koi Gilbert — Sales &amp; Labor</title>
+<style>
+:root{
+  --bg:#0f1115; --panel:#161a21; --panel2:#1c222b; --line:#2a3240;
+  --tx:#e7ecf3; --tx2:#9aa7b8; --tx3:#6c7a8d;
+  --acc:#4f9cf9; --good:#3ddc97; --bad:#ff6b6b; --warn:#ffb454;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: light){
+  :root{ --bg:#f4f6f9; --panel:#fff; --panel2:#f7f9fc; --line:#dfe5ee;
+         --tx:#141a22; --tx2:#5a6878; --tx3:#8b98a8; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);
+  font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1320px;margin:0 auto;padding:18px 16px 70px}
+h1{font-size:19px;margin:0;letter-spacing:-.2px}
+h2{font-size:12.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--tx2);margin:0 0 10px}
+h3{font-size:12px;margin:14px 0 6px;color:var(--tx2);text-transform:uppercase;letter-spacing:.06em}
+.sub{color:var(--tx3);font-size:12px;margin-top:3px}
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:15px;margin-bottom:12px}
+.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+button{font:inherit;background:var(--panel2);color:var(--tx);border:1px solid var(--line);
+  border-radius:7px;padding:7px 12px;cursor:pointer}
+button:hover{border-color:var(--acc)}
+button.pri{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+button.go{background:var(--good);border-color:var(--good);color:#05231a;font-weight:700}
+button.sm{padding:4px 9px;font-size:12px}
+button.danger:hover{border-color:var(--bad);color:var(--bad)}
+button:disabled{opacity:.45;cursor:not-allowed}
+select,input[type=text],input[type=number],input[type=date],textarea{font:inherit;background:var(--panel2);
+  color:var(--tx);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+textarea{font-family:var(--mono);font-size:12px;width:100%}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--tx2)}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{border:1px solid var(--line);padding:5px 7px;text-align:right;white-space:nowrap}
+th{background:var(--panel2);font-weight:600;font-size:11px;color:var(--tx2)}
+th.lbl,td.lbl{text-align:left;font-weight:600;background:var(--panel2)}
+td.txt{text-align:left;white-space:normal}
+td.num{font-family:var(--mono);font-size:12.5px}
+tr.tot td{font-weight:700;background:var(--panel2)}
+.badge{display:inline-block;font-size:10.5px;padding:2px 7px;border-radius:20px;
+  border:1px solid var(--line);color:var(--tx2);background:var(--panel2)}
+.badge.lock{border-color:var(--good);color:var(--good)}
+.badge.open{border-color:var(--warn);color:var(--warn)}
+.badge.bad{border-color:var(--bad);color:var(--bad)}
+.good{color:var(--good)} .bad{color:var(--bad)} .warn{color:var(--warn)} .dim{color:var(--tx3)}
+#drop{border:2px dashed var(--line);border-radius:10px;padding:18px;text-align:center;color:var(--tx2);cursor:pointer}
+#drop.hot{border-color:var(--acc);background:rgba(79,156,249,.07);color:var(--tx)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:10px}
+.kpi{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+.kpi .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--tx3)}
+.kpi .v{font-size:20px;font-weight:700;font-family:var(--mono);margin-top:3px}
+.kpi .n{font-size:11px;color:var(--tx3);margin-top:2px}
+.alert{border-left:3px solid var(--warn);background:rgba(255,180,84,.08);padding:9px 12px;
+  border-radius:0 7px 7px 0;font-size:12.5px;margin-bottom:6px}
+.alert.b{border-left-color:var(--bad);background:rgba(255,107,107,.08)}
+.alert.g{border-left-color:var(--good);background:rgba(61,220,151,.08)}
+.alert.i{border-left-color:var(--acc);background:rgba(79,156,249,.08)}
+.fcard{display:flex;align-items:center;gap:11px;background:var(--panel2);border:1px solid var(--line);
+  border-radius:8px;padding:8px 11px;margin-bottom:6px;flex-wrap:wrap;font-size:12.5px}
+.fcard .nm{font-family:var(--mono);font-size:12px;flex:1;min-width:180px;overflow:hidden;text-overflow:ellipsis}
+details summary{cursor:pointer;color:var(--tx2);font-size:12.5px}
+.mini{font-size:11.5px;color:var(--tx3)}
+.line{padding:6px 0;border-bottom:1px solid var(--line);font-size:13px}
+.line:last-child{border-bottom:0}
+.line .basis{font-family:var(--mono);font-size:12px;color:var(--tx2)}
+#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--panel);
+  border:1px solid var(--acc);padding:9px 16px;border-radius:8px;font-size:13px;max-width:80vw;
+  opacity:0;pointer-events:none;transition:.2s;z-index:99}
+#toast.on{opacity:1}
+.scroll{overflow-x:auto}
+code{font-family:var(--mono);font-size:12px;background:var(--panel2);padding:1px 4px;border-radius:3px}
+body.review .hideInReview{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="topbar">
+  <div>
+    <h1>Clever Koi Gilbert</h1>
+    <div class="sub">Weekly sales &amp; labor &mdash; drop the Toast and 7shifts exports, the week fills itself in</div>
+  </div>
+  <div class="row">
+    <button class="pri" onclick="document.getElementById('loadjson').click()">Open workbook</button>
+    <input type="file" id="loadjson" accept=".json,.csv" multiple style="display:none" onchange="loadFile(this)">
+    <button class="hideInReview" onclick="saveFile()">Save workbook</button>
+    <button onclick="exportXlsx()">Export for Drive</button>
+    <button class="sm" id="advBtn" onclick="toggleAdv()">Analysis</button>
+  </div>
+</div>
+
+<div id="reviewBar"></div>
+<div id="dirtyBar"></div>
+<div id="anchorBar"></div>
+
+<!-- ═══ IMPORT ═══ -->
+<div class="panel hideInReview">
+  <h2>Drop the exports</h2>
+  <div class="mini" style="margin-bottom:9px">
+    <strong>Toast &rarr; Sales by day</strong> (no time filter, any date range) &middot;
+    <strong>Toast payroll</strong>, one week per file, named <code>PayrollExport_YYYY_MM_DD-YYYY_MM_DD.csv</code> &middot;
+    <strong>7shifts weekly schedule</strong>, filename carrying the Monday date. Drop them all at once.
+  </div>
+  <div id="drop"><strong>Drop CSVs here</strong> or click to choose
+    <div class="mini" style="margin-top:4px">A saved <code>.json</code> workbook works here too</div></div>
+  <input type="file" id="csvin" accept=".csv,.txt,.json" multiple style="display:none">
+  <div id="staged" style="margin-top:10px"></div>
+  <div id="gapPanel"></div>
+  <div id="reconPanel"></div>
+</div>
+
+<!-- ═══ 1 THE WEEK ═══ -->
+<div class="panel">
+  <div class="row" style="justify-content:space-between;align-items:flex-start">
+    <div>
+      <h2 style="margin:0">1 &middot; The week</h2>
+      <div class="mini" id="weekMeta" style="margin-top:4px"></div>
+    </div>
+    <div class="row">
+      <select id="weekSel" onchange="state.cur=this.value;persist(true);render()"></select>
+      <button class="sm" onclick="shiftWeek(-1)">&larr;</button>
+      <button class="sm" onclick="shiftWeek(1)">&rarr;</button>
+      <button class="sm" onclick="gotoToday()">Today</button>
+    </div>
+  </div>
+  <div id="weekFlags" style="margin-top:10px"></div>
+  <div class="scroll" style="margin-top:10px"><div id="salesTable"></div></div>
+  <div class="grid2" id="kpis" style="margin-top:12px"></div>
+</div>
+
+<!-- ═══ 2 LABOR ═══ -->
+<div class="panel">
+  <h2>2 &middot; Labor &mdash; by department, posted vs actual</h2>
+  <div id="labNote" class="mini" style="margin-bottom:9px"></div>
+  <div class="scroll"><div id="labDept"></div></div>
+  <div id="labRecon"></div>
+  <h3>Posted vs actual</h3>
+  <div class="scroll"><div id="labVarDept"></div></div>
+  <div class="scroll" style="margin-top:8px"><div id="labPeople"></div></div>
+  <div id="labOnSched" style="margin-top:8px"></div>
+</div>
+
+<!-- ═══ 3 OVERTIME ═══ -->
+<div class="panel">
+  <h2>3 &middot; Overtime</h2>
+  <div id="otPanel"></div>
+</div>
+
+<!-- ═══ 4 NEXT WEEK ═══ -->
+<div class="panel">
+  <h2>4 &middot; Next week &mdash; <span id="fwdLbl"></span></h2>
+  <div class="mini" id="fwdNote" style="margin-bottom:9px"></div>
+  <div id="projPanel"></div>
+  <div id="fwdPanel"></div>
+</div>
+
+<!-- ══════════ ANALYSIS ══════════ -->
+<div id="advanced" style="display:none">
+  <div class="panel">
+    <h2>All weeks</h2>
+    <div class="mini" style="margin-bottom:8px">Labor % is shown only where both a full payroll week and a complete sales week exist.</div>
+    <div class="scroll"><div id="histTable"></div></div>
+  </div>
+  <div class="panel">
+    <h2>Data checks for this week</h2>
+    <div id="dataChecks"></div>
+  </div>
+</div>
+
+<details class="panel">
+  <summary><strong>How this runs each week</strong></summary>
+  <ol style="font-size:13px;line-height:1.75;margin:8px 0 0;padding-left:20px">
+    <li><b>Open workbook</b> &mdash; the latest <code>.json</code> from the shared Drive folder.</li>
+    <li>Monday: pull last week's <b>payroll</b> (one week, Mon&ndash;Sun) and <b>Sales by day</b>, and next week's <b>7shifts draft</b>. Drop them together.</li>
+    <li>Check the cards, confirm any missing sales days, then <b>Write in</b>.</li>
+    <li>Fix anything in <em>Reconcile names</em> before reading posted vs actual.</li>
+    <li>In section 4, size the draft schedule and <b>commit</b> next week's sales number.</li>
+    <li><b>Save workbook</b> and <b>Export for Drive</b>; put both in the shared folder. The file is the record.</li>
+  </ol>
+</details>
+
+<details class="panel">
+  <summary><strong>Settings</strong> &mdash; fiscal calendar, salaried list, house accounts, job titles</summary>
+  <div style="margin-top:12px">
+    <div class="row">
+      <label class="f">Anchor: period <input type="number" id="aP" min="1" max="13" style="width:64px" onchange="setAnchor()"></label>
+      <label class="f">week <input type="number" id="aW" min="1" max="4" style="width:64px" onchange="setAnchor()"></label>
+      <label class="f">starts Monday <input type="date" id="aD" onchange="setAnchor()"></label>
+      <label class="f" style="flex-direction:row;align-items:center;gap:7px">
+        <input type="checkbox" id="aV" onchange="state.anchor.verified=this.checked;persist();render()">
+        <span>I've checked this against the published fiscal calendar</span></label>
+    </div>
+    <div class="mini" id="anchorNote" style="margin-top:6px"></div>
+    <h3>Salaried staff &mdash; one per line, <code>Name | BOH</code> or <code>Name | FOH/Bar</code></h3>
+    <div class="mini" style="margin-bottom:5px">People on the 7shifts schedule with no Toast payroll rows. Counted as coverage, never as cost. Stored in the workbook, not in this page.</div>
+    <textarea id="salIn" rows="5" onchange="setSalaried(this.value)"></textarea>
+    <h3>House / terminal accounts &mdash; Toast employee names, one per line</h3>
+    <div class="mini" style="margin-bottom:5px">Excluded by name before any per-person logic. Titles <span id="houseTitles"></span> are also excluded.</div>
+    <textarea id="houseIn" rows="3" onchange="setHouse(this.value)"></textarea>
+    <h3>Job titles &rarr; department</h3>
+    <div id="jobMapEd"></div>
+    <h3>Linked names</h3>
+    <div id="aliasEd"></div>
+    <h3>This browser</h3>
+    <div class="row">
+      <label class="f">This browser is for
+        <select id="roleSel" onchange="setRole(this.value)">
+          <option value="input">Inputting — can import and save</option>
+          <option value="review">Review only — cannot change the file</option>
+        </select></label>
+      <label class="f">Whose machine is this
+        <input type="text" id="whoIn" placeholder="e.g. Gary" style="width:130px" oninput="setWho(this.value)"></label>
+      <label class="f">Labor target %
+        <input type="number" id="labTgt" step="0.5" style="width:80px"
+          onchange="state.laborTarget=+this.value||23;persist();render()"></label>
+      <label class="f" style="flex-direction:row;align-items:center;gap:7px">
+        <input type="checkbox" id="cents" onchange="state.cents=this.checked;persist();render()"> <span>Show cents</span></label>
+      <button class="danger sm hideInReview" onclick="if(confirm('Clear the working copy in this browser? The file in Drive is unaffected.')){try{localStorage.removeItem(LSK)}catch(e){}location.reload()}">Clear working copy</button>
+    </div>
+  </div>
+</details>
+
+<details class="panel">
+  <summary><strong>Notes</strong> &mdash; what this does and doesn't know</summary>
+  <div style="margin-top:11px;font-size:13px;line-height:1.62">
+    <p><strong>Labor % is hourly wages only.</strong> Toast Total Pay (regular + overtime, no tips) divided by net sales.
+    Salaried staff, payroll taxes and benefits are not in it. House/terminal accounts are removed before anything else.</p>
+    <p><strong>Two different rates.</strong> Actual cost uses each person's weighted average (total pay &divide; total hours),
+    never their highest job code. Next week's schedule is priced at <em>regular</em> pay &divide; regular hours, so last
+    month's overtime premium isn't baked into this week's estimate.</p>
+    <p><strong>A name that doesn't match is a data problem, not a finding.</strong> Unreconciled people are listed and
+    kept out of posted-vs-actual until linked. Someone who appears on the 7shifts schedule at 0 hours and still clocked in is
+    a real &ldquo;not posted&rdquo;.</p>
+    <p><strong>Requested time off is invisible.</strong> 7shifts shows it as an alert with no hours, and the export renders
+    it as a blank cell &mdash; identical to &ldquo;not scheduled&rdquo;. A light schedule may be a cut, a vacation, or a
+    departure; this page can't tell which.</p>
+    <p><strong>Comparisons are not prescriptions.</strong> Who can close a station, skill mix and coverage needs are not in any
+    file. Every suggestion carries its basis on the same line so it can be rejected in seconds.</p>
+    <p><strong>No closed days are assumed.</strong> A date inside a sales export's range with no row is flagged for you to
+    confirm once (closed, or a bad export) and then remembered.</p>
+    <p><strong>Last year's same week</strong> is the week 364 days earlier &mdash; same fiscal week in a 13&times;4 year.</p>
+  </div>
+</details>
+
+<div class="mini" style="text-align:center">Self-contained page, no network requests, no data leaves this browser.</div>
+</div>
+<div id="toast"></div>
+
+<script>
+"use strict";
+const LOC="Gilbert";                 // Toast payroll "Location" value this tracker accepts
+const LSK="ckgil_tracker_v1";        // must differ from every other tracker on the same GitHub Pages origin
+const SCHEMA=1;
+const DAYS=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+const DEPTS=["BOH","FOH/Bar"];
+const HOUSE_TITLES=["Ghost Server","Ghost Bar","To Go Server"];
+
+/* ══════════ dates + fiscal periods ══════════ */
+const p2=n=>String(+n).padStart(2,"0");
+const iso=d=>d.toISOString().slice(0,10);
+function mk(s){const[y,m,d]=s.split("-").map(Number);return new Date(Date.UTC(y,m-1,d))}
+function addD(s,n){const d=mk(s);d.setUTCDate(d.getUTCDate()+n);return iso(d)}
+function monday(s){const d=mk(s);d.setUTCDate(d.getUTCDate()-((d.getUTCDay()+6)%7));return iso(d)}
+const wkDiff=(a,b)=>Math.round((mk(b)-mk(a))/604800000);
+// The browser's own calendar date, not UTC — UTC rolls to Monday at 5pm Sunday in Phoenix.
+function todayLocal(){const d=new Date();return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate())}
+function label(key){
+  const A=state.anchor,wpp=4,ppy=13;
+  const abs=(A.period-1)*wpp+(A.week-1)+wkDiff(A.start,key);
+  const p=Math.floor(abs/wpp),w=((abs%wpp)+wpp)%wpp;
+  return "P"+((((p%ppy)+ppy)%ppy)+1)+" WK"+(w+1);
+}
+function fmtDate(s){const d=mk(s);return(d.getUTCMonth()+1)+"/"+d.getUTCDate()}
+function fmtDateY(s){const d=mk(s);return(d.getUTCMonth()+1)+"/"+d.getUTCDate()+"/"+String(d.getUTCFullYear()).slice(2)}
+
+/* ══════════ state ══════════ */
+let state=null;
+function defaultJobMap(){return{
+  "Line Cook":"BOH","Prep Cook":"BOH","Dishwasher":"BOH","Chef":"BOH","Sous Chef":"BOH",
+  "Server":"FOH/Bar","Bartender":"FOH/Bar","Greeter":"FOH/Bar","Busser":"FOH/Bar","Barback":"FOH/Bar",
+  "Bar Prep":"FOH/Bar","Bar Manager":"FOH/Bar","Bar Admin":"FOH/Bar","Hourly Manager":"FOH/Bar",
+  "Server/Bar Trainer":"FOH/Bar","Trainer - Server/Bar":"FOH/Bar","Training - Server/Bar":"FOH/Bar",
+  "Training - Support":"FOH/Bar","General Manager":"FOH/Bar",
+  "Ghost Server":"","Ghost Bar":"","To Go Server":""}}
+const BOH_ROLES=/^(line cook|prep cook|dishwasher|sous chef|chef|cook)$/i;
+function fresh(){return{loc:LOC,schema:SCHEMA,
+  anchor:{period:8,week:1,start:"2026-07-06",verified:false},
+  laborTarget:23,cur:null,cents:false,rev:0,savedBy:"",savedAt:"",
+  sales:{},cov:[],gaps:{},weeks:{},
+  // No names in the page source — GitHub Pages is public. These live only in the workbook.
+  salaried:[],house:["AM Server, AM Server","BAR, PM","Server, To Go"],
+  jobMap:defaultJobMap(),aliases:{},rateOverride:{},departed:[]}}
+function blankWeek(){return{proj:null,pay:null,sched:null}}
+function wk(key){if(!state.weeks[key])state.weeks[key]=blankWeek();return state.weeks[key]}
+const peek=key=>state.weeks[key]||blankWeek();
+const who=()=>{try{return localStorage.getItem(LSK+"_who")||""}catch(e){return""}};
+const role=()=>{try{return localStorage.getItem(LSK+"_role")||"input"}catch(e){return"input"}};
+const readOnly=()=>role()==="review";
+function setWho(v){try{localStorage.setItem(LSK+"_who",v.trim())}catch(e){}}
+function setRole(v){try{localStorage.setItem(LSK+"_role",v)}catch(e){}render()}
+
+const r2=n=>Math.round((+n||0)*100)/100;
+const hrs=n=>(Math.round((+n||0)*100)/100).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+function money(n,forceCents){
+  const c=(state&&state.cents)||forceCents,v=+n||0;
+  return(v<0?"-$":"$")+Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:c?2:0,maximumFractionDigits:c?2:0});
+}
+const pctf=(n,d,dp)=>d?((n/d)*100).toFixed(dp==null?1:dp)+"%":"—";
+const sgn=n=>(n>0?"+":"")+hrs(n);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const jsq=s=>esc(JSON.stringify(String(s)));
+function say(m){const t=document.getElementById("toast");t.innerHTML=m;t.className="on";
+  clearTimeout(say._t);say._t=setTimeout(()=>t.className="",3500)}
+
+/* ══════════ sales: one bucket, stored per day ══════════ */
+function inCov(d){return state.cov.some(r=>d>=r[0]&&d<=r[1])}
+function addCov(a,b){
+  const all=[...state.cov,[a,b]].sort((x,y)=>x[0]<y[0]?-1:1),out=[];
+  all.forEach(r=>{const L=out[out.length-1];
+    if(L&&r[0]<=addD(L[1],1)){if(r[1]>L[1])L[1]=r[1]}else out.push([r[0],r[1]])});
+  state.cov=out;
+}
+function dayInfo(d){
+  if(state.sales[d]!=null)return{v:state.sales[d],have:true};
+  const g=state.gaps[d];
+  if(g==="closed")return{v:0,have:true,closed:true};
+  if(inCov(d))return{have:false,gap:g||"?"};      // inside an export's range, no row
+  return{have:false};                                // never pulled
+}
+function weekSales(key){
+  const days=[0,1,2,3,4,5,6].map(i=>Object.assign({d:addD(key,i)},dayInfo(addD(key,i))));
+  const n=days.filter(x=>x.have).length;
+  return{days,n,complete:n===7,tot:r2(days.reduce((s,x)=>s+(x.have?x.v:0),0)),
+    anyGap:days.some(x=>!x.have&&x.gap==="?")};
+}
+
+/* ══════════ names ══════════ */
+function normName(s){
+  s=String(s||"").replace(/"/g,"").trim();
+  if(s.includes(",")){const i=s.indexOf(",");s=s.slice(i+1).trim()+" "+s.slice(0,i).trim()}
+  return s.toLowerCase().replace(/[.']/g,"").replace(/\b(jr|sr|ii|iii|fo|ckc|gil|gilbert)\b/g,"")
+    .replace(/[^a-z\s-]/g," ").replace(/\s+/g," ").trim();
+}
+const toks=s=>normName(s).split(/[\s-]+/).filter(t=>t.length>=3);
+const share=(a,b)=>{const B=new Set(toks(b));return toks(a).filter(t=>B.has(t)).length};
+// Payroll (legal, "Last, First") to 7shifts (preferred, "First Last"). Exact normalised name first,
+// then manual links, then ≥2 shared tokens — only when unique in BOTH directions, so two people
+// who share a surname are never fused.
+function linkNames(payNames,schedNames){
+  const out={},usedS=new Set();
+  const sByNorm={};schedNames.forEach(s=>sByNorm[normName(s)]=s);
+  payNames.forEach(p=>{const s=sByNorm[normName(p)];if(s&&!usedS.has(s)){out[p]={s,how:"exact"};usedS.add(s)}});
+  const al=state.aliases||{};
+  payNames.forEach(p=>{if(out[p])return;const t=al[normName(p)];if(!t)return;
+    const s=schedNames.find(x=>normName(x)===t&&!usedS.has(x));if(s){out[p]={s,how:"manual"};usedS.add(s)}});
+  const P=payNames.filter(p=>!out[p]);let S=schedNames.filter(s=>!usedS.has(s));
+  P.forEach(p=>{
+    const c=S.filter(s=>share(p,s)>=2);if(c.length!==1)return;
+    if(P.filter(q=>!out[q]&&share(q,c[0])>=2).length!==1)return;
+    out[p]={s:c[0],how:"tokens"};usedS.add(c[0]);S=S.filter(x=>x!==c[0]);
+  });
+  return out;
+}
+function salariedEntry(name){
+  const n=normName(name);
+  return state.salaried.find(x=>normName(x.name)===n)||
+    (()=>{const c=state.salaried.filter(x=>share(x.name,name)>=2);return c.length===1?c[0]:null})();
+}
+// "Last, First" → "First Last" for display only
+const flipName=s=>{s=String(s||"").trim();const i=s.indexOf(",");return i<0?s:(s.slice(i+1).trim()+" "+s.slice(0,i).trim()).replace(/\s+/g," ")};
+const isHouseName=e=>state.house.some(h=>normName(h)===normName(e));
+
+/* ══════════ 7shifts cells ══════════ */
+function tParse(s){
+  s=String(s||"").trim().toLowerCase();
+  if(/^(cl|bd|close)$/.test(s))return null;                       // no fixed end time
+  const m=s.match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)$/);if(!m)return undefined;
+  let h=(+m[1])%12;if(m[3]==="pm")h+=12;return h+(+(m[2]||0))/60;
+}
+function parseCell(c){
+  // a leading date would otherwise be read as the start hour
+  c=String(c||"").replace(/^\s*\d{1,4}[\/-]\d{1,2}[\/-]\d{1,4}\s*/,"").trim();
+  if(!c)return[];
+  return c.split("|").map(x=>x.trim()).filter(Boolean).map(x=>{
+    const m=x.match(/^(.+?)\s+-\s+(.+?)(?:\s*\(([^)]*)\))?\s*$/);if(!m)return{raw:x};
+    let s=tParse(m[1]),e=tParse(m[2]);
+    if(s!=null&&e!=null&&e<=s)e+=24;
+    return{s,e,role:(m[3]||"").trim(),raw:x};
+  });
+}
+// Two shifts on one day whose explicit times overlap — 7shifts adds both to Payable Hours.
+function overlapHrs(cells){
+  let ov=0;const notes=[];
+  cells.forEach((c,i)=>{
+    const sh=parseCell(c).filter(x=>x.s!=null).sort((a,b)=>a.s-b.s);
+    for(let j=1;j<sh.length;j++){const a=sh[j-1],b=sh[j];
+      if(a.e!=null&&b.s<a.e){const o=r2(Math.min(a.e,b.e!=null?b.e:a.e)-b.s);
+        if(o>0){ov+=o;notes.push(DAYS[i]+" "+a.raw+" | "+b.raw)}}}
+  });
+  return{ov:r2(ov),notes};
+}
+function mainRole(cells){
+  const n={};cells.forEach(c=>parseCell(c).forEach(x=>{if(x.role)n[x.role]=(n[x.role]||0)+1}));
+  let b="",m=0;Object.keys(n).forEach(k=>{if(n[k]>m){m=n[k];b=k}});return b;
+}
+
+/* ══════════ labor for one week (payroll actuals + posted) ══════════ */
+let CACHE={};
+function laborFor(key){
+  if(CACHE["L"+key]!==undefined)return CACHE["L"+key];
+  const W=peek(key),P=W.pay,S=W.sched;
+  if(!P&&!S)return CACHE["L"+key]=null;
+  const map=state.jobMap,rows=P?P.rows:[];
+  const dept={};DEPTS.forEach(d=>dept[d]={hrs:0,pay:0,ot:0,otPay:0,train:0,trainPay:0});
+  const unmapped={},house={hrs:0,who:{}},salAuto={};
+  const emp={};
+  rows.forEach(r=>{
+    const h=r2(r.rh+r.oth);if(h<=0)return;                     // 0-hour rows: salaried placeholders, ignore
+    if(isHouseName(r.emp)||HOUSE_TITLES.includes(r.job)||map[r.job]===""){
+      house.hrs=r2(house.hrs+h);house.who[r.emp]=r2((house.who[r.emp]||0)+h);return}
+    const d=map[r.job];
+    if(d===undefined){unmapped[r.job]=r2((unmapped[r.job]||0)+h);return}
+    if(r.pay===0){salAuto[r.emp]={hrs:r2((salAuto[r.emp]?salAuto[r.emp].hrs:0)+h),dept:d};return}
+    const D=dept[d];D.hrs=r2(D.hrs+h);D.pay=r2(D.pay+r.pay);D.ot=r2(D.ot+r.oth);D.otPay=r2(D.otPay+r.otPay);
+    if(/train/i.test(r.job)){D.train=r2(D.train+h);D.trainPay=r2(D.trainPay+r.pay)}
+    const e=emp[r.emp]||(emp[r.emp]={hrs:0,pay:0,ot:0,otPay:0,regH:0,regPay:0,by:{},titles:{}});
+    e.hrs=r2(e.hrs+h);e.pay=r2(e.pay+r.pay);e.ot=r2(e.ot+r.oth);e.otPay=r2(e.otPay+r.otPay);
+    e.regH=r2(e.regH+r.rh);e.regPay=r2(e.regPay+r.regPay);
+    e.by[d]=r2((e.by[d]||0)+h);e.titles[r.job]=r2((e.titles[r.job]||0)+h);
+  });
+  Object.keys(emp).forEach(k=>{const e=emp[k];
+    e.dept=Object.keys(e.by).sort((a,b)=>e.by[b]-e.by[a])[0];
+    e.rate=e.hrs?e.pay/e.hrs:0;e.regRate=e.regH?e.regPay/e.regH:e.rate});
+  // schedule
+  const sp=S?S.ppl:{},schedNames=Object.keys(sp);
+  const salCov={BOH:0,"FOH/Bar":0},salPeople=[];
+  schedNames.forEach(n=>{const se=salariedEntry(n);if(se&&sp[n].h>0){
+    salCov[se.dept]=r2((salCov[se.dept]||0)+sp[n].h);salPeople.push({name:n,h:sp[n].h,dept:se.dept})}});
+  Object.keys(salAuto).forEach(k=>{salCov[salAuto[k].dept]=r2((salCov[salAuto[k].dept]||0)+salAuto[k].hrs)});
+  const nonSal=schedNames.filter(n=>!salariedEntry(n));
+  const links=linkNames(Object.keys(emp),nonSal);
+  const linkedS=new Set(Object.values(links).map(x=>x.s));
+  const people=[],unrecPay=[],unrecSched=[];
+  Object.keys(emp).forEach(k=>{
+    const e=emp[k],L=links[k];
+    if(!L){unrecPay.push({emp:k,hrs:e.hrs,dept:e.dept});return}
+    const posted=sp[L.s].h,v=r2(e.hrs-posted);
+    people.push({emp:k,sname:L.s,how:L.how,posted,actual:e.hrs,var:v,rate:e.rate,dollars:r2(v*e.rate),
+      dept:e.dept,notPosted:posted===0});
+  });
+  // On the schedule with hours, no payroll link, not on the salaried list. Could be a name mismatch,
+  // an unlisted salaried person, or a no-show — the files can't say which, so it's asked, not counted.
+  if(P)nonSal.forEach(n=>{if(!linkedS.has(n)&&sp[n].h>0)unrecSched.push({name:n,h:sp[n].h,role:mainRole(sp[n].cells)})});
+  const varD={};DEPTS.forEach(d=>varD[d]={posted:0,actual:0,over:0,under:0,overH:0,underH:0});
+  people.forEach(p=>{const V=varD[p.dept];if(!V)return;V.posted=r2(V.posted+p.posted);V.actual=r2(V.actual+p.actual);
+    if(p.var>0){V.over=r2(V.over+p.dollars);V.overH=r2(V.overH+p.var)}else{V.under=r2(V.under+p.dollars);V.underH=r2(V.underH+p.var)}});
+  const totHrs=r2(DEPTS.reduce((s,d)=>s+dept[d].hrs,0)),totPay=r2(DEPTS.reduce((s,d)=>s+dept[d].pay,0));
+  const ws=weekSales(key),payDays=P?P.days:0;
+  const fullPay=payDays===7,pctOK=!!P&&fullPay&&ws.complete&&ws.tot>0;
+  return CACHE["L"+key]={key,hasPay:!!P,hasSched:!!S,payDays,fullPay,dept,totHrs,totPay,house,unmapped,salAuto,salCov,salPeople,
+    emp,people,unrecPay,unrecSched,varD,sales:ws,pctOK,pct:pctOK?totPay/ws.tot:null};
+}
+// payroll weeks before key, newest first
+function histKeys(key,n,needSched){
+  return Object.keys(state.weeks).filter(k=>k<key&&state.weeks[k].pay&&state.weeks[k].pay.days===7&&
+    (!needSched||state.weeks[k].sched)).sort().reverse().slice(0,n);
+}
+
+/* ══════════ projections ══════════ */
+const LY=k=>addD(k,-364);
+function suggest(key){
+  const ly=weekSales(LY(key));
+  const prior=allWeekKeys().filter(k=>k<key&&weekSales(k).complete).sort().reverse();
+  const pairs=prior.filter(k=>weekSales(LY(k)).complete).slice(0,4);
+  if(ly.complete&&ly.tot>0&&pairs.length>=2){
+    const a=pairs.reduce((s,k)=>s+weekSales(k).tot,0),b=pairs.reduce((s,k)=>s+weekSales(LY(k)).tot,0);
+    const ratio=a/b;
+    return{v:Math.round(ly.tot*ratio/100)*100,basis:`LY same week ${money(ly.tot)} (${fmtDateY(LY(key))}) × trailing YoY ${ratio.toFixed(3)} (${pairs.length} wks)`};
+  }
+  const t=prior.slice(0,4);
+  if(t.length){const avg=t.reduce((s,k)=>s+weekSales(k).tot,0)/t.length;
+    return{v:Math.round(avg/100)*100,basis:`trailing ${t.length}-week average`+(ly.complete?"":" — no complete LY week to scale")}}
+  return null;
+}
+function commitProj(key){
+  if(readOnly())return;
+  const el=document.getElementById("projIn"),v=Math.round(num(el&&el.value)||0);
+  if(!v){say("Enter a weekly number first");return}
+  const W=wk(key),now=new Date().toISOString().slice(0,16).replace("T"," ");
+  if(!W.proj||!W.proj.lockedAt){W.proj={orig:v,cur:v,lockedAt:now,by:who()||"",revs:[]};say("Committed and locked")}
+  else{if(v===W.proj.cur){say("Unchanged");return}
+    W.proj.revs.push({at:now,from:W.proj.cur,to:v,by:who()||""});W.proj.cur=v;
+    say("Logged as revision "+W.proj.revs.length+" — variance still uses the original "+money(W.proj.orig))}
+  persist();render();
+}
+
+/* ══════════ forward: size the draft schedule before the week ══════════ */
+function forwardFor(key){
+  if(CACHE["F"+key]!==undefined)return CACHE["F"+key];
+  const S=peek(key).sched;if(!S)return CACHE["F"+key]=null;
+  const hk=histKeys(key,6,true);                   // weeks with both payroll and schedule
+  const H=hk.map(k=>laborFor(k));
+  const empAll={};H.forEach(L=>Object.keys(L.emp).forEach(e=>{
+    const x=empAll[e]||(empAll[e]={regH:0,regPay:0,dept:{},weeks:[]});
+    x.regH+=L.emp[e].regH;x.regPay+=L.emp[e].regPay;x.dept[L.emp[e].dept]=(x.dept[L.emp[e].dept]||0)+L.emp[e].hrs;
+    x.weeks.push({k:L.key,actual:L.emp[e].hrs})}));
+  // drift pairs: posted>0 and actual, from reconciled weeks only
+  const drift={};H.forEach(L=>L.people.forEach(p=>{if(p.posted>0){(drift[p.emp]=drift[p.emp]||[]).push({p:p.posted,a:p.actual})}}));
+  // role / title rates for people with no history
+  const titleRate={},deptRate={};
+  H.forEach(L=>{(peek(L.key).pay.rows||[]).forEach(r=>{
+    if(r.rh<=0||r.regPay<=0||isHouseName(r.emp)||HOUSE_TITLES.includes(r.job))return;
+    const t=titleRate[r.job]||(titleRate[r.job]={h:0,p:0});t.h+=r.rh;t.p+=r.regPay;
+    const d=state.jobMap[r.job];if(d){const x=deptRate[d]||(deptRate[d]={h:0,p:0});x.h+=r.rh;x.p+=r.regPay}})});
+  const roleTitle=r=>/^trainer$/i.test(r)?"Server/Bar Trainer":r;
+  const sp=S.ppl,names=Object.keys(sp);
+  const nonSal=names.filter(n=>!salariedEntry(n));
+  const links=linkNames(Object.keys(empAll),nonSal);
+  const s2e={};Object.keys(links).forEach(e=>s2e[links[e].s]=e);
+  const rows=[],salCov={BOH:0,"FOH/Bar":0};
+  names.forEach(n=>{const se=salariedEntry(n);if(se&&sp[n].h>0)salCov[se.dept]=r2(salCov[se.dept]+sp[n].h)});
+  nonSal.forEach(n=>{
+    const P=sp[n];if(!(P.h>0))return;
+    const e=s2e[n],hist=e?empAll[e]:null,role=mainRole(P.cells);
+    let rate=null,rateBasis="";
+    const ovr=(state.rateOverride||{})[normName(n)];
+    if(hist&&hist.regH>0){rate=hist.regPay/hist.regH;rateBasis="own regular rate"}
+    else if(ovr){rate=ovr;rateBasis="rate you entered"}
+    else{const t=titleRate[roleTitle(role)];
+      const d=hist?Object.keys(hist.dept).sort((a,b)=>hist.dept[b]-hist.dept[a])[0]:(BOH_ROLES.test(role)?"BOH":"FOH/Bar");
+      if(t&&t.h>0){rate=t.p/t.h;rateBasis="estimated — "+roleTitle(role)+" average"}
+      else if(deptRate[d]){rate=deptRate[d].p/deptRate[d].h;rateBasis="estimated — "+d+" average"}}
+    const dept=hist?Object.keys(hist.dept).sort((a,b)=>hist.dept[b]-hist.dept[a])[0]:(BOH_ROLES.test(role)?"BOH":"FOH/Bar");
+    const O=overlapHrs(P.cells),posted=r2(P.h-O.ov);
+    const dp=e?(drift[e]||[]).slice(0,5):[];
+    let ratio=null;if(dp.length>=3){ratio=dp.reduce((s,x)=>s+x.a,0)/dp.reduce((s,x)=>s+x.p,0)}
+    const expect=ratio!=null?r2(posted*ratio):posted;
+    rows.push({name:n,emp:e||null,dept,role,rawPosted:P.h,overlap:O,posted,rate,rateBasis,
+      ratio,driftN:dp.length,expect,over40:r2(Math.max(0,posted-40)),
+      premium:rate?r2(Math.max(0,posted-40)*rate*0.5):null,isNew:!hist});
+  });
+  // regulars missing from this schedule
+  const last4=H.slice(0,4);
+  const gone=new Set((state.departed||[]).map(normName));
+  const regulars=Object.keys(empAll).filter(e=>!gone.has(normName(e))&&last4.filter(L=>L.emp[e]&&L.emp[e].hrs>=10).length>=2);
+  const onSched=new Set(rows.filter(r=>r.emp).map(r=>r.emp));
+  const missing=regulars.filter(e=>!onSched.has(e)).map(e=>{
+    const a=last4.filter(L=>L.emp[e]).map(L=>L.emp[e].hrs);return{emp:e,avg:r2(a.reduce((s,x)=>s+x,0)/a.length),n:a.length}});
+  // department totals vs trailing norm
+  const dep={};DEPTS.forEach(d=>dep[d]={posted:0,cost:0,expect:0,expCost:0,unpriced:0});
+  rows.forEach(r=>{const D=dep[r.dept];D.posted=r2(D.posted+r.posted);D.expect=r2(D.expect+r.expect);
+    if(r.rate!=null){D.cost=r2(D.cost+r.posted*r.rate+(r.premium||0));
+      const ex40=Math.max(0,r.expect-40);D.expCost=r2(D.expCost+r.expect*r.rate+ex40*r.rate*0.5)}else D.unpriced=r2(D.unpriced+r.posted)});
+  const normKeys=last4.filter(L=>L.pctOK);
+  const norm={};DEPTS.forEach(d=>{
+    if(!normKeys.length){norm[d]=null;return}
+    const h=normKeys.reduce((s,L)=>s+L.dept[d].hrs,0)/normKeys.length;
+    const c=normKeys.reduce((s,L)=>s+L.dept[d].pay,0)/normKeys.length;
+    const sales=normKeys.reduce((s,L)=>s+L.sales.tot,0);
+    const sal=normKeys.reduce((s,L)=>s+(L.salCov[d]||0),0)/normKeys.length;
+    norm[d]={hrs:r2(h),cost:r2(c),pct:normKeys.reduce((s,L)=>s+L.dept[d].pay,0)/sales,sal:r2(sal),n:normKeys.length}});
+  const normSales=normKeys.length?normKeys.reduce((s,L)=>s+L.sales.tot,0)/normKeys.length:null;
+  const W=peek(key),proj=W.proj&&W.proj.lockedAt?{v:W.proj.orig,committed:true}:(()=>{const s=suggest(key);return s?{v:s.v,committed:false,basis:s.basis}:null})();
+  // A department posted at a fraction of its norm hasn't been written yet — don't read it as a cut.
+  const unposted=DEPTS.filter(d=>norm[d]&&dep[d].posted<norm[d].hrs*0.25);
+  return CACHE["F"+key]={key,hk,rows,missing,dep,norm,normSales,salCov,proj,unposted,
+    totCost:r2(DEPTS.reduce((s,d)=>s+dep[d].cost,0)),totExp:r2(DEPTS.reduce((s,d)=>s+dep[d].expCost,0)),
+    unpriced:r2(DEPTS.reduce((s,d)=>s+dep[d].unpriced,0))};
+}
+
+/* ══════════ persistence ══════════ */
+let dirty=false;
+function persist(quiet){CACHE={};try{localStorage.setItem(LSK,JSON.stringify(state))}catch(e){}if(!quiet){dirty=true}drawDirty()}
+function drawDirty(){
+  const el=document.getElementById("dirtyBar");if(!el)return;
+  if(readOnly()){el.innerHTML="";return}
+  el.innerHTML=dirty
+    ?`<div class="alert b"><strong>Not saved to a file yet.</strong> The browser copy is a buffer and won't survive
+       clearing history or moving machines. <button class="pri sm" style="margin-left:8px" onclick="saveFile()">Save workbook now</button></div>`
+    :(state.savedAt?`<div class="alert g"><span class="mini">Saved to file ${esc(state.savedAt)} (rev ${state.rev}) &mdash; that file is the record.</span></div>`:"");
+}
+function restore(){try{const s=localStorage.getItem(LSK);if(s){const p=JSON.parse(s);if(p&&p.loc===LOC&&p.weeks)return p}}catch(e){}return null}
+function dl(name,blob){const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download=name;document.body.appendChild(a);a.click();a.remove()}
+function cleanState(){
+  const w={};Object.keys(state.weeks).forEach(k=>{const x=state.weeks[k];if(x.pay||x.sched||x.proj)w[k]=x});
+  return Object.assign({},state,{weeks:w});
+}
+function saveFile(){
+  if(readOnly()){say("This browser is set to <strong>review only</strong>, so saving is off.");return}
+  state.savedAt=new Date().toISOString().slice(0,16).replace("T"," ");
+  state.rev=(+state.rev||0)+1;state.savedBy=who()||"unnamed";
+  dl("Gilbert tracker rev"+state.rev+" "+todayLocal()+".json",new Blob([JSON.stringify(cleanState(),null,1)],{type:"application/json"}));
+  dirty=false;persist(true);
+  say("Workbook saved (rev "+state.rev+"). Put it in the shared Drive folder.");
+}
+function loadWorkbook(f,then){
+  const rd=new FileReader();
+  rd.onload=()=>{let p;try{p=JSON.parse(rd.result)}catch(e){p=null}
+    if(!p||!p.weeks){alert(`"${f.name}" isn't a tracker workbook.`);if(then)then();return}
+    // Two trackers share one GitHub Pages origin; opening the other store's file must be refused.
+    if(p.loc!==LOC){alert(`"${f.name}" is not a ${LOC} workbook`+(p.loc?` — it belongs to ${p.loc}.`:` — it has no location stamp, so it's from a different tracker.`)+`\n\nNothing was loaded.`);if(then)then();return}
+    const mine=+((state&&state.rev)||0),theirs=+(p.rev||0);
+    if(mine>theirs&&hasData()&&!readOnly()&&
+       !confirm(`The file you're opening is OLDER than what this browser holds.\n\n  this browser: revision ${mine}${state.savedBy?" (saved by "+state.savedBy+")":""}\n  that file:    revision ${theirs}${p.savedBy?" (saved by "+p.savedBy+")":""}\n\nOpening it replaces the newer data on this machine. Continue?`)){if(then)then();return}
+    state=Object.assign(fresh(),p);dirty=false;persist(true);render();
+    say("Loaded "+esc(f.name)+(p.savedBy?" · saved by "+esc(p.savedBy):"")+(p.rev?" · rev "+p.rev:""));
+    if(then)then()};
+  rd.readAsText(f);
+}
+const hasData=()=>Object.keys(state.sales).length>0||Object.keys(state.weeks).length>0;
+function ingest(files){
+  const list=[...files];if(!list.length)return;
+  const json=list.filter(f=>/\.json$/i.test(f.name)),csv=list.filter(f=>!/\.json$/i.test(f.name));
+  if(json.length){if(json.length>1)say("Only one workbook opens at a time — opened "+esc(json[0].name));
+    loadWorkbook(json[0],csv.length?()=>handleFiles(csv):null)}
+  else handleFiles(csv);
+}
+function loadFile(inp){ingest(inp.files);inp.value=""}
+
+/* ══════════ CSV parsing ══════════ */
+function parseCSV(text){
+  text=text.replace(/^﻿/,"").replace(/\r\n?/g,"\n");
+  const rows=[];let f="",row=[],q=false;
+  for(let i=0;i<text.length;i++){const c=text[i];
+    if(q){if(c==='"'){if(text[i+1]==='"'){f+='"';i++}else q=false}else f+=c}
+    else if(c==='"')q=true;else if(c===","){row.push(f);f=""}
+    else if(c==="\n"){row.push(f);rows.push(row);row=[];f=""}else f+=c}
+  row.push(f);rows.push(row);
+  const headers=(rows[0]||[]).map(h=>h.trim());
+  const data=rows.slice(1).filter(r=>r.some(c=>c.trim()!==""))
+    .map(r=>{const o={};headers.forEach((h,i)=>o[h]=(r[i]||"").trim());return o});
+  return{headers,data};
+}
+function num(v){
+  if(v==null)return null;let s=String(v).trim();if(!s)return null;
+  const neg=/^\(.*\)$/.test(s)||/^-/.test(s);
+  s=s.replace(/[()$,\s]/g,"").replace(/^-/,"");
+  if(s===""||isNaN(s))return null;return(neg?-1:1)*parseFloat(s);
+}
+function parseDate(v){
+  const s=String(v||"").trim();
+  let m=s.match(/^(\d{4})(\d{2})(\d{2})$/);if(m)return`${m[1]}-${m[2]}-${m[3]}`;
+  m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);if(m)return`${m[1]}-${p2(m[2])}-${p2(m[3])}`;
+  m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);if(m){let y=+m[3];if(y<100)y+=2000;return`${y}-${p2(m[1])}-${p2(m[2])}`}
+  return null;
+}
+function validDate(s){return !!s&&iso(mk(s))===s}
+// Filenames carry the week. Separators normalised first: \b doesn't break on underscores.
+function datesInName(n){
+  const t=n.replace(/[_.]/g," ");
+  const out=[];const re=/(\d{4})[ -](\d{1,2})[ -](\d{1,2})/g;let m;
+  while((m=re.exec(t)))out.push(`${m[1]}-${p2(m[2])}-${p2(m[3])}`);
+  return out.filter(validDate);
+}
+
+/* ══════════ staging ══════════ */
+let STAGE=[];
+function handleFiles(files){
+  const list=[...files];if(!list.length)return;let done=0;
+  list.forEach(f=>{const rd=new FileReader();
+    rd.onload=()=>{STAGE=STAGE.filter(s=>s.name!==f.name);STAGE.push(classify(f.name,rd.result));
+      if(++done===list.length){STAGE.sort((a,b)=>(a.order-b.order)||(a.wk||"").localeCompare(b.wk||""));drawStage()}};
+    rd.readAsText(f)});
+}
+function classify(name,text){
+  const p=parseCSV(text),H=p.headers.map(x=>x.toLowerCase());
+  const has=s=>H.includes(s);
+  const e={name,order:9};
+  if(has("job title")&&has("regular hours")){
+    e.kind="payroll";e.order=2;
+    const locs=[...new Set(p.data.map(r=>(r["Location"]||"").trim()).filter(Boolean))];
+    if(locs.length&&!(locs.length===1&&locs[0].toLowerCase()===LOC.toLowerCase())){
+      e.err=`Location in this file is <strong>${esc(locs.join(", "))}</strong>, not ${LOC}. Refused.`;return e}
+    const d=datesInName(name);
+    if(d.length<2){e.err="No date range in the filename. Rename it <code>PayrollExport_YYYY_MM_DD-YYYY_MM_DD.csv</code> — the file itself has no dates.";return e}
+    const a=d[0],b=d[1],days=Math.round((mk(b)-mk(a))/86400000)+1;
+    if(monday(a)!==a){e.err=`Starts ${fmtDateY(a)}, which isn't a Monday. Pull Monday–Sunday.`;return e}
+    if(days>7){e.err=`Covers ${days} days. A multi-week payroll pull has one row per person per title for the whole range and can't be split into weeks — pull one week per file.`;return e}
+    if(days<1){e.err="End date is before start date.";return e}
+    e.wk=a;e.days=days;e.end=b;
+    e.rows=p.data.map(r=>({emp:(r["Employee"]||"").replace(/\s+,/g,",").trim(),job:(r["Job Title"]||"").trim(),
+      rh:num(r["Regular Hours"])||0,oth:num(r["Overtime Hours"])||0,regPay:num(r["Regular Pay"])||0,
+      otPay:num(r["Overtime Pay"])||0,pay:num(r["Total Pay"])||0})).filter(r=>r.emp&&r.job);
+    const bad=e.rows.filter(r=>Math.abs(r.regPay+r.otPay-r.pay)>0.011).length;
+    if(bad)e.warn=`${bad} row${bad>1?"s":""} where Regular + Overtime pay ≠ Total Pay.`;
+    e.sum=`${label(a)} · ${fmtDate(a)}–${fmtDate(b)}`+(days<7?` · <span class="warn">${days} of 7 days — labor % will be withheld</span>`:"")+
+      ` · ${e.rows.length} rows`;
+    return e;
+  }
+  if(has("name")&&has("payable hours")){
+    e.kind="sched";e.order=3;
+    const d=datesInName(name);
+    if(!d.length){e.err="No date in the filename — the schedule file has none inside it. Add the Monday date, e.g. <code>7shifts_2026_10_26.csv</code>.";return e}
+    if(monday(d[0])!==d[0]){e.err=`Date in filename (${fmtDateY(d[0])}) isn't a Monday.`;return e}
+    e.wk=d[0];const ppl={};
+    p.data.forEach(r=>{const n=(r["Name"]||"").trim();if(!n||/^salary\b/i.test(n))return;
+      const h=num(r["Payable Hours"]);if(h==null)return;
+      const cells=DAYS.map((_,i)=>r[["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"][i]]||"");
+      if(ppl[n]){ppl[n].h=r2(ppl[n].h+h);ppl[n].cells=ppl[n].cells.map((c,i)=>[c,cells[i]].filter(Boolean).join(" | "))}
+      else ppl[n]={h:r2(h),cells}});
+    e.ppl=ppl;const tot=Object.values(ppl).reduce((s,x)=>s+x.h,0);
+    e.sum=`${label(d[0])} · week of ${fmtDate(d[0])} · ${Object.values(ppl).filter(x=>x.h>0).length} people posted · ${hrs(tot)} payable hrs`;
+    return e;
+  }
+  if(H.some(h=>/yyyymmdd|^date$|business date/.test(h))&&H.some(h=>/net sales/.test(h))){
+    e.kind="sales";e.order=1;
+    const dc=p.headers.find(h=>/yyyymmdd|^date$|business date/i.test(h)),nc=p.headers.find(h=>/net sales/i.test(h));
+    const days={};let dated=[];
+    p.data.forEach(r=>{const d=parseDate(r[dc]);if(!d||!validDate(d))return;dated.push(d);
+      const v=num(r[nc]);if(v!=null)days[d]=r2((days[d]||0)+v)});
+    // coverage from every date-valid row, not only rows with amounts
+    if(!dated.length){e.err="No dated rows.";return e}
+    dated.sort();e.from=dated[0];e.to=dated[dated.length-1];e.days=days;
+    const missing=[];for(let d=e.from;d<=e.to;d=addD(d,1))if(days[d]==null)missing.push(d);
+    e.missing=missing;
+    e.sum=`${fmtDateY(e.from)}–${fmtDateY(e.to)} · ${Object.keys(days).length} days`+
+      (missing.length?` · <span class="warn">${missing.length} day${missing.length>1?"s":""} with no row</span>`:"")+
+      ` · orders &amp; guests ignored`;
+    return e;
+  }
+  e.err="Not a recognised export (expected Sales by day, Toast payroll, or a 7shifts weekly schedule).";return e;
+}
+function drawStage(){
+  const el=document.getElementById("staged");
+  if(!STAGE.length){el.innerHTML="";return}
+  const ok=STAGE.filter(s=>!s.err);
+  // what each write would replace — recomputed from STAGE now, never from an earlier preview
+  const notes=ok.map(s=>{
+    if(s.kind==="payroll"&&peek(s.wk).pay)return "replaces payroll already stored for "+label(s.wk);
+    if(s.kind==="sched"&&peek(s.wk).sched)return "replaces the schedule already stored for "+label(s.wk);
+    if(s.kind==="sales"){const ch=Object.keys(s.days).filter(d=>state.sales[d]!=null&&r2(state.sales[d])!==s.days[d]).length;
+      return ch?`changes ${ch} stored day${ch>1?"s":""}`:""}
+    return""});
+  const dupWk={};ok.forEach(s=>{if(s.kind!=="sales"){const k=s.kind+s.wk;dupWk[k]=(dupWk[k]||0)+1}});
+  el.innerHTML=STAGE.map((s,i)=>{
+    const kind={sales:"Sales",payroll:"Payroll",sched:"7shifts"}[s.kind]||"?";
+    const j=ok.indexOf(s);
+    return `<div class="fcard"><span class="badge ${s.err?"bad":""}">${kind}</span><span class="nm">${esc(s.name)}</span>
+      <span>${s.err?`<span class="bad">${s.err}</span>`:s.sum}${s.warn?` · <span class="warn">${s.warn}</span>`:""}
+      ${!s.err&&dupWk[s.kind+s.wk]>1?` · <span class="bad">two files for the same week — the last one wins</span>`:""}
+      ${j>=0&&notes[j]?` · <span class="warn">${notes[j]}</span>`:""}</span>
+      <button class="sm" onclick="STAGE.splice(${i},1);drawStage()">✕</button></div>`}).join("")+
+    `<div class="row" style="margin-top:8px"><button class="go" ${ok.length?"":"disabled"} onclick="applyStage()">Write in ${ok.length} file${ok.length===1?"":"s"}</button>
+     <button class="sm" onclick="STAGE=[];drawStage()">Clear</button></div>`;
+}
+function applyStage(){
+  if(readOnly())return;
+  const ok=STAGE.filter(s=>!s.err);let newGaps=0,sDays=0,pw=[],sw=[];
+  ok.filter(s=>s.kind==="sales").forEach(s=>{
+    Object.keys(s.days).forEach(d=>{state.sales[d]=s.days[d];delete state.gaps[d];sDays++});
+    // walk every date in the span — holidays with no row anywhere must still resolve
+    s.missing.forEach(d=>{if(state.sales[d]==null&&!state.gaps[d]){state.gaps[d]="?";newGaps++}});
+    addCov(s.from,s.to);
+  });
+  const now=new Date().toISOString().slice(0,16).replace("T"," ");
+  ok.filter(s=>s.kind==="payroll").forEach(s=>{wk(s.wk).pay={rows:s.rows,days:s.days,file:s.name,at:now};pw.push(s.wk)});
+  ok.filter(s=>s.kind==="sched").forEach(s=>{wk(s.wk).sched={ppl:s.ppl,file:s.name,at:now};sw.push(s.wk)});
+  STAGE=STAGE.filter(s=>s.err);
+  const lastPay=pw.slice().sort().pop();if(lastPay)state.cur=lastPay;
+  else if(!state.cur&&sDays)state.cur=monday(Object.keys(state.sales).sort().pop());
+  persist();render();drawStage();
+  say(`Written: ${sDays} sales days, ${pw.length} payroll week(s), ${sw.length} schedule(s)`+(newGaps?` · <strong>${newGaps} day(s) need confirming</strong>`:""));
+}
+function setGap(d,v){if(readOnly())return;state.gaps[d]=v;persist();render()}
+
+/* ══════════ week list ══════════ */
+function allWeekKeys(){
+  const s=new Set(Object.keys(state.weeks).filter(k=>{const x=state.weeks[k];return x.pay||x.sched||x.proj}));
+  Object.keys(state.sales).forEach(d=>s.add(monday(d)));
+  return[...s].sort();
+}
+function shiftWeek(n){state.cur=addD(state.cur,7*n);persist(true);render()}
+function gotoToday(){state.cur=monday(todayLocal());persist(true);render()}
+function defaultCur(){
+  const pk=Object.keys(state.weeks).filter(k=>state.weeks[k].pay).sort().pop();
+  if(pk)return pk;const ks=allWeekKeys();return ks.length?ks[ks.length-1]:monday(todayLocal());
+}
+
+/* ══════════ render ══════════ */
+let adv=false;
+function toggleAdv(){adv=!adv;document.getElementById("advanced").style.display=adv?"":"none";
+  document.getElementById("advBtn").classList.toggle("pri",adv);render()}
+function render(){
+  CACHE={};
+  if(!state.cur)state.cur=defaultCur();
+  document.body.classList.toggle("review",readOnly());
+  document.getElementById("reviewBar").innerHTML=readOnly()?`<div class="alert i"><strong>Review only.</strong> Importing, committing and saving are off on this browser. Open the latest workbook from Drive to see current numbers.</div>`:"";
+  document.getElementById("anchorBar").innerHTML=state.anchor.verified?"":
+    `<div class="alert"><strong>Period labels are unverified.</strong> The anchor (P${state.anchor.period} WK${state.anchor.week} = ${fmtDateY(state.anchor.start)}) was inferred from the other location's sheet labels and never checked against a published calendar. Confirm it in Settings.</div>`;
+  drawDirty();drawWeekSel();drawWeek();drawLabor();drawOT();drawForward();drawGaps();drawRecon();
+  if(adv){drawHist();drawChecks()}
+  drawSettings();
+}
+function drawWeekSel(){
+  const ks=allWeekKeys();if(!ks.includes(state.cur))ks.push(state.cur);ks.sort().reverse();
+  document.getElementById("weekSel").innerHTML=ks.map(k=>{const W=peek(k);
+    const tags=[W.pay?"payroll":"",W.sched?"schedule":""].filter(Boolean).join("+");
+    return `<option value="${k}" ${k===state.cur?"selected":""}>${label(k)} · ${fmtDateY(k)}${tags?" · "+tags:""}</option>`}).join("");
+}
+function drawWeek(){
+  const k=state.cur,ws=weekSales(k),W=peek(k),L=laborFor(k);
+  document.getElementById("weekMeta").innerHTML=`${label(k)} &middot; ${fmtDateY(k)} – ${fmtDateY(addD(k,6))} &middot; sales ${ws.n}/7 days`+
+    (W.pay?` &middot; payroll ${W.pay.days}/7 days`:" &middot; no payroll")+(W.sched?" &middot; schedule loaded":"");
+  const cellFor=x=>x.have?(x.closed?`<span class="dim">closed</span>`:money(x.v)):
+    (x.gap==="?"?`<span class="warn">no row?</span>`:x.gap==="bad"?`<span class="bad">bad export</span>`:`<span class="dim">—</span>`);
+  const P=W.proj&&W.proj.lockedAt?W.proj:null;
+  let h=`<table><tr><th class="lbl"></th>${ws.days.map((x,i)=>`<th>${DAYS[i]} ${fmtDate(x.d)}</th>`).join("")}<th>Week</th></tr>
+    <tr><td class="lbl">Net sales</td>${ws.days.map(x=>`<td class="num">${cellFor(x)}</td>`).join("")}
+    <td class="num"><strong>${money(ws.tot)}</strong>${ws.complete?"":` <span class="badge open">${ws.n}/7</span>`}</td></tr>`;
+  const ly=weekSales(LY(k));
+  h+=`<tr><td class="lbl">Last year (${fmtDateY(LY(k))})</td>${ly.days.map(x=>`<td class="num dim">${x.have?(x.closed?"closed":money(x.v)):"—"}</td>`).join("")}
+    <td class="num dim">${ly.n?money(ly.tot)+(ly.complete?"":" ("+ly.n+"/7)"):"—"}</td></tr></table>`;
+  document.getElementById("salesTable").innerHTML=h;
+  const flags=[];
+  if(ws.anyGap)flags.push(`<div class="alert">Sales has days inside an export's range with no row. Confirm them in the import panel — until then this week is incomplete.</div>`);
+  document.getElementById("weekFlags").innerHTML=flags.join("");
+  const tgt=state.laborTarget/100,K=[];
+  K.push(kpi("Net sales",money(ws.tot),ws.complete?"complete week":`${ws.n} of 7 days`));
+  if(P){const v=r2(ws.tot-P.orig);
+    K.push(kpi("vs committed",ws.complete?`<span class="${v>=0?"good":"bad"}">${v>=0?"+":""}${money(v)}</span>`:"withheld",
+      ws.complete?`committed ${money(P.orig)}${P.revs.length?` · ${P.revs.length} revision${P.revs.length>1?"s":""} after`:""}`:`part-week vs full-week number reads as a miss that isn't real`))}
+  else K.push(kpi("vs committed","—","no committed number for this week"));
+  if(ly.complete&&ws.complete)K.push(kpi("vs last year",`<span class="${ws.tot>=ly.tot?"good":"bad"}">${pctf(ws.tot-ly.tot,ly.tot)}</span>`,money(ly.tot)+" LY"));
+  if(L&&L.hasPay){
+    K.push(kpi("Hourly labor %",L.pctOK?`<span class="${L.pct<=tgt?"good":"bad"}">${(L.pct*100).toFixed(2)}%</span>`:"withheld",
+      L.pctOK?`target ${state.laborTarget}% · ${money(L.totPay)}`:(L.fullPay?"sales week incomplete":`payroll covers ${L.payDays} of 7 days`)));
+    K.push(kpi("Hourly hours",hrs(L.totHrs),`${hrs(L.house.hrs)} house-account hrs excluded`));
+  }
+  document.getElementById("kpis").innerHTML=K.join("");
+}
+const kpi=(k,v,n)=>`<div class="kpi"><div class="k">${k}</div><div class="v">${v}</div><div class="n">${n||""}</div></div>`;
+
+function drawLabor(){
+  const L=laborFor(state.cur),ids=["labDept","labRecon","labVarDept","labPeople","labOnSched"];
+  if(!L||!L.hasPay){ids.forEach(i=>document.getElementById(i).innerHTML="");
+    document.getElementById("labNote").innerHTML=L&&L.hasSched?"Schedule only — no payroll for this week yet. See section 4 for the forward view.":"No payroll for this week.";return}
+  const tgt=state.laborTarget,s=L.sales.tot;
+  document.getElementById("labNote").innerHTML=`Hourly wages only (Toast Total Pay, tips excluded) against net sales. `+
+    (L.pctOK?"":`<span class="warn">Labor % withheld — ${L.fullPay?"sales week is incomplete":"payroll covers "+L.payDays+" of 7 days"}.</span>`);
+  let h=`<table><tr><th class="lbl">Department</th><th>Hours</th><th>Cost</th><th>Labor %</th><th>vs ${tgt}%</th><th>OT hrs</th><th>Training hrs</th><th>Salaried coverage hrs</th></tr>`;
+  DEPTS.forEach(d=>{const D=L.dept[d];
+    h+=`<tr><td class="lbl">${d}</td><td class="num">${hrs(D.hrs)}</td><td class="num">${money(D.pay)}</td>
+      <td class="num">${L.pctOK?pctf(D.pay,s,2):"—"}</td><td class="num dim">—</td><td class="num">${hrs(D.ot)}</td>
+      <td class="num">${D.train?hrs(D.train)+` <span class="dim">(${money(D.trainPay)})</span>`:"—"}</td><td class="num">${hrs(L.salCov[d]||0)}</td></tr>`});
+  const dlt=L.pctOK?r2(L.pct*100-tgt):null;
+  h+=`<tr class="tot"><td class="lbl">Total hourly</td><td class="num">${hrs(L.totHrs)}</td><td class="num">${money(L.totPay)}</td>
+    <td class="num">${L.pctOK?(L.pct*100).toFixed(2)+"%":"—"}</td>
+    <td class="num">${dlt==null?"—":`<span class="${dlt<=0?"good":"bad"}">${dlt>0?"+":""}${dlt.toFixed(2)} pts · ${money(r2(L.totPay-s*tgt/100))}</span>`}</td>
+    <td class="num">${hrs(L.dept.BOH.ot+L.dept["FOH/Bar"].ot)}</td><td class="num">${hrs(L.dept.BOH.train+L.dept["FOH/Bar"].train)}</td>
+    <td class="num">${hrs((L.salCov.BOH||0)+(L.salCov["FOH/Bar"]||0))}</td></tr></table>
+    <div class="mini" style="margin-top:5px">Excluded before anything else: ${Object.keys(L.house.who).map(n=>esc(n)+" "+hrs(L.house.who[n])).join(" · ")||"no house accounts"}.`+
+    (Object.keys(L.salAuto).length?` Auto-detected salaried (hours, $0 pay): ${Object.keys(L.salAuto).map(esc).join(", ")}.`:"")+
+    (Object.keys(L.unmapped).length?` <span class="bad">Unmapped titles, not counted: ${Object.keys(L.unmapped).map(t=>esc(t)+" "+hrs(L.unmapped[t])).join(", ")} — map them in Settings.</span>`:"")+`</div>`;
+  document.getElementById("labDept").innerHTML=h;
+  const R=[];
+  if(!L.hasSched)R.push(`<div class="alert i">No 7shifts schedule for this week, so posted vs actual can't be shown.</div>`);
+  if(L.unrecPay.length||L.unrecSched.length)R.push(`<div class="alert b"><strong>${L.unrecPay.length+L.unrecSched.length} name${L.unrecPay.length+L.unrecSched.length>1?"s":""} not reconciled.</strong>
+    These are kept out of posted vs actual — a missing match is a data problem, not unposted labor. Fix them in the import panel.</div>`);
+  document.getElementById("labRecon").innerHTML=R.join("");
+  if(!L.hasSched){["labVarDept","labPeople","labOnSched"].forEach(i=>document.getElementById(i).innerHTML="");return}
+  let v=`<table><tr><th class="lbl">Department</th><th>Posted</th><th>Actual</th><th>Over (hrs · $)</th><th>Under (hrs · $)</th><th>Net $</th><th>Gross $</th></tr>`;
+  DEPTS.forEach(d=>{const V=L.varD[d];
+    v+=`<tr><td class="lbl">${d}</td><td class="num">${hrs(V.posted)}</td><td class="num">${hrs(V.actual)}</td>
+      <td class="num">${sgn(V.overH)} · ${money(V.over)}</td><td class="num">${hrs(V.underH)} · ${money(V.under)}</td>
+      <td class="num">${money(r2(V.over+V.under))}</td><td class="num">${money(r2(V.over-V.under))}</td></tr>`});
+  v+=`</table><div class="mini" style="margin-top:4px">Net is what the schedule miss cost; gross is how far off it was in both directions. Priced at each person's weighted average rate.</div>`;
+  document.getElementById("labVarDept").innerHTML=v;
+  const off=L.people.filter(p=>Math.abs(p.var)>1).sort((a,b)=>b.var-a.var),on=L.people.filter(p=>Math.abs(p.var)<=1);
+  let pp=`<table><tr><th class="lbl">Person</th><th class="lbl">Dept</th><th>Posted</th><th>Actual</th><th>Diff</th><th>$</th><th class="lbl">Note</th></tr>`;
+  DEPTS.forEach(d=>off.filter(p=>p.dept===d).forEach(p=>{
+    pp+=`<tr><td class="lbl">${esc(p.sname)}</td><td class="lbl">${d}</td><td class="num">${hrs(p.posted)}</td><td class="num">${hrs(p.actual)}</td>
+      <td class="num ${p.var>0?"bad":"good"}">${sgn(p.var)}</td><td class="num">${money(p.dollars)}</td>
+      <td class="txt mini">${p.notPosted?"on 7shifts at 0 hrs but clocked in — not posted":""}${p.how==="tokens"&&normName(p.emp)!==normName(p.sname)?" linked to "+esc(p.emp):""}</td></tr>`}));
+  pp+=`</table>`;
+  document.getElementById("labPeople").innerHTML=off.length?pp:`<div class="mini">Nobody more than 1 hour off their posted hours.</div>`;
+  document.getElementById("labOnSched").innerHTML=on.length?`<details><summary>On schedule (within ±1 hr) — ${on.length}: ${on.map(p=>esc(p.sname)).join(", ")}</summary>
+    <div class="mini" style="margin-top:6px">${on.map(p=>`${esc(p.sname)} ${hrs(p.posted)}→${hrs(p.actual)}`).join(" · ")}</div></details>`:"";
+}
+
+function drawOT(){
+  const L=laborFor(state.cur),el=document.getElementById("otPanel");
+  if(!L||!L.hasPay){el.innerHTML=`<div class="mini">No payroll for this week.</div>`;return}
+  const list=Object.keys(L.emp).filter(e=>L.emp[e].ot>0).map(e=>{
+    const E=L.emp[e],p=L.people.find(x=>x.emp===e),unrec=L.unrecPay.some(x=>x.emp===e);
+    // repeat badge: OT weeks in the trailing 8 payroll weeks, this one included
+    const back=[state.cur,...histKeys(state.cur,7)];const rep=back.filter(k=>{const X=laborFor(k);return X&&X.emp[e]&&X.emp[e].ot>0}).length;
+    const diag=unrec?"not reconciled — fix the name match first":!p?"no schedule loaded":p.posted===0?"not on the schedule":
+      p.posted>40?`scheduled above 40 (posted ${hrs(p.posted)}) — fix the schedule`:`ran over (posted ${hrs(p.posted)}, worked ${hrs(E.hrs)})`;
+    return{e,name:p?p.sname:flipName(e),E,rep,n:back.length,diag,prem:r2(E.otPay/3)}}).sort((a,b)=>b.E.ot-a.E.ot);
+  if(!list.length){el.innerHTML=`<div class="alert g">No overtime this week. House accounts are excluded.</div>`;return}
+  const prem=r2(list.reduce((s,x)=>s+x.prem,0));
+  el.innerHTML=`<div class="mini" style="margin-bottom:6px">${hrs(list.reduce((s,x)=>s+x.E.ot,0))} OT hrs · ${money(prem,true)} premium (the half in time-and-a-half = OT pay ÷ 3). House accounts excluded.</div>
+    <table><tr><th class="lbl">Person</th><th>OT hrs</th><th>Premium</th><th>Repeat</th><th class="lbl">Diagnosis</th></tr>`+
+    list.map(x=>`<tr><td class="lbl">${esc(x.name)}</td><td class="num">${hrs(x.E.ot)}</td><td class="num">${money(x.prem,true)}</td>
+      <td class="num">${x.rep>1?`<span class="badge open">${x.rep} of ${x.n} wks</span>`:`<span class="dim">1 of ${x.n}</span>`}</td><td class="txt">${x.diag}</td></tr>`).join("")+`</table>`;
+}
+
+// The week to size: the selected one if it's schedule-only, else the first schedule-only week after it.
+function fwdKey(){
+  const W=peek(state.cur);if(W.sched&&!W.pay)return state.cur;
+  const next=Object.keys(state.weeks).filter(k=>k>state.cur&&state.weeks[k].sched&&!state.weeks[k].pay).sort()[0];
+  return next||addD(state.cur,7);
+}
+function drawForward(){
+  const k=fwdKey(),F=forwardFor(k);
+  document.getElementById("fwdLbl").textContent=`${label(k)} · ${fmtDateY(k)}`;
+  const W=peek(k),sug=suggest(k),P=W.proj&&W.proj.lockedAt?W.proj:null;
+  // projection commit
+  let pj=`<div class="row" style="background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px;margin-bottom:11px">`;
+  if(P)pj+=`<span class="badge lock">committed ${money(P.orig)}</span><span class="mini">${esc(P.lockedAt)}${P.by?" · "+esc(P.by):""}${P.revs.length?` · ${P.revs.length} revision${P.revs.length>1?"s":""}, now ${money(P.cur)}`:""}</span>`;
+  else pj+=`<span class="badge open">not committed</span>`;
+  pj+=`<span class="hideInReview row"><label class="f">Weekly net sales<input type="text" id="projIn" style="width:120px" value="${P?P.cur:(sug?sug.v:"")}"></label>
+    <button class="pri sm" onclick="commitProj('${k}')">${P?"Log revision":"Commit &amp; lock"}</button></span>
+    <span class="mini" style="flex:1;min-width:240px">${sug?`Suggested ${money(sug.v)} — <span class="basis">${esc(sug.basis)}</span>`:"No history to suggest from."}</span></div>`;
+  document.getElementById("projPanel").innerHTML=pj;
+  const el=document.getElementById("fwdPanel");
+  if(!F){document.getElementById("fwdNote").innerHTML="";
+    el.innerHTML=`<div class="mini">Drop next week's 7shifts draft (filename with the Monday date) to size it before it goes out.</div>`;return}
+  document.getElementById("fwdNote").innerHTML=`Draft schedule ${esc(W.sched.file)} · compared with ${F.hk.length} prior week${F.hk.length===1?"":"s"} that have both payroll and a schedule.`+
+    (F.hk.length<3?` <span class="warn">Thin history — drift forecasts need 3 weeks per person.</span>`:"");
+  const out=[];
+  out.push(`<div class="alert i">Requested time off is <strong>not in the 7shifts export</strong> — it renders as a blank cell, identical to “not scheduled”. A light line below may be a vacation, not a cut.</div>`);
+  // 1 posted over 40
+  const o40=F.rows.filter(r=>r.over40>0);
+  out.push(`<h3>1 · Posted over 40 <span class="dim">— arithmetic, highest confidence</span></h3>`+(o40.length?o40.map(r=>
+    `<div class="line"><strong>${esc(r.name)}</strong> posted ${hrs(r.posted)} → buys ${hrs(r.over40)} OT hrs before the week starts
+      <span class="basis">(${r.premium!=null?"~"+money(r.premium,true)+" premium at "+money(r.rate,true)+"/hr regular":"no rate"})</span></div>`).join(""):
+    `<div class="line dim">Nobody hourly is posted over 40.</div>`));
+  // overlaps — schedule-entry errors
+  const ov=F.rows.filter(r=>r.overlap.ov>0);
+  if(ov.length)out.push(`<div class="alert">${ov.map(r=>`<strong>${esc(r.name)}</strong>: overlapping shifts (${r.overlap.notes.map(esc).join("; ")}) — 7shifts counted ${hrs(r.overlap.ov)} hrs twice. Payable ${hrs(r.rawPosted)} treated as ${hrs(r.posted)} below.`).join("<br>")}</div>`);
+  // 2 drift
+  const dr=F.rows.filter(r=>r.ratio!=null&&Math.abs(r.expect-r.posted)>=1).sort((a,b)=>(b.expect-b.posted)-(a.expect-a.posted));
+  const thin=F.rows.filter(r=>r.ratio==null&&!r.isNew);
+  out.push(`<h3>2 · Drift forecast <span class="dim">— posted × each person's trailing actual/posted</span></h3>`+(dr.length?dr.map(r=>{
+    const pc=Math.round((r.ratio-1)*100),pass40=r.expect>40&&r.posted<=40;
+    return `<div class="line"><strong>${esc(r.name)}</strong> posted ${hrs(r.posted)} → expect ~${hrs(r.expect)}
+      <span class="basis">(runs ${Math.abs(pc)}% ${pc>=0?"over":"under"}, ${r.driftN} wks${r.rate?` · ${r.expect>r.posted?"+":""}${money(r2((r.expect-r.posted)*r.rate))}`:""})</span>${pass40?` <span class="bad">— drifts past 40</span>`:""}</div>`}).join(""):
+    `<div class="line dim">No one forecast to run more than an hour off posted.</div>`)+
+    (thin.length?`<div class="mini" style="margin-top:4px">Fewer than 3 weeks of history, no forecast: ${thin.map(r=>esc(r.name)+` (${r.driftN})`).join(", ")}.</div>`:""));
+  // new / missing people
+  const nw=F.rows.filter(r=>r.isNew);
+  if(nw.length||F.missing.length)out.push(`<div class="mini" style="margin-top:6px">`+
+    (nw.length?`<div>No payroll history — priced at an estimate until their first payroll week:</div>`+nw.map(r=>`<div class="row" style="margin:3px 0"><strong>${esc(r.name)}</strong> ${hrs(r.posted)} hrs ·
+      ${r.rate?`${money(r.rate,true)}/hr = ${money(r2(r.posted*r.rate))} <span class="basis">(${esc(r.rateBasis)})</span>`:"unpriced"}
+      <span class="hideInReview row">real rate <input type="text" id="rt_${esc(normName(r.name)).replace(/\s/g,"_")}" style="width:70px" placeholder="$/hr">
+      <button class="sm" onclick="setRate(${jsq(r.name)})">Set</button></span></div>`).join(""):"")+
+    (F.missing.length?`<div style="margin-top:4px">Regulars not on this schedule — time off, or gone? The export can't say:</div>`+F.missing.map(m=>`<div class="row" style="margin:3px 0"><strong>${esc(flipName(m.emp))}</strong> usually ~${hrs(m.avg)} hrs
+      <button class="sm hideInReview" onclick="markGone(${jsq(flipName(m.emp))})">No longer with us — stop flagging</button></div>`).join(""):"")+`</div>`);
+  // 3 section vs norm
+  let t=`<h3>3 · Department vs its trailing norm <span class="dim">— hours and dollars</span></h3>`;
+  const ps=F.proj?F.proj.v:null,salesChg=(ps&&F.normSales)?(ps-F.normSales)/F.normSales:null;
+  DEPTS.forEach(d=>{const D=F.dep[d],N=F.norm[d];
+    if(F.unposted.includes(d)){t+=`<div class="line"><strong>${d}</strong> ${hrs(D.posted)} hrs posted vs ${hrs(N.hrs)} usual — <span class="warn">looks not posted yet. Comparison withheld; drop the schedule again once it's written.</span></div>`;return}
+    if(!N){t+=`<div class="line"><strong>${d}</strong> ${hrs(D.posted)} hrs posted, ${money(D.cost)} — <span class="dim">no complete trailing weeks to compare with</span></div>`;return}
+    const dh=r2(D.posted-N.hrs),dc=r2(D.cost-N.cost),dsal=r2((F.salCov[d]||0)-N.sal);
+    if(Math.abs(dsal)>=8){
+      t+=`<div class="line"><strong>${d}</strong> ${hrs(D.posted)} hrs, ${money(D.cost)} <span class="basis">(${dh>=0?"+":""}${hrs(dh)} hrs vs ${hrs(N.hrs)} norm)</span>
+        — <span class="warn">norm comparison suppressed: salaried coverage ${dsal>0?"up":"down"} ${hrs(Math.abs(dsal))} hrs (${hrs(F.salCov[d]||0)} vs ${hrs(N.sal)} usual)</span>.
+        ${dsal<0?"A salaried absence covered by hourly staff costs money and is correct; a gap here may not be overscheduling.":"More salaried hours on the floor; hourly hours may not need to move with it."}</div>`;return}
+    const pctNow=ps?D.cost/ps:null;
+    t+=`<div class="line"><strong>${d}</strong> ${hrs(D.posted)} hrs, ${money(D.cost)}
+      <span class="basis">(${dh>=0?"+":""}${hrs(dh)} hrs, ${dc>=0?"+":""}${money(dc)} vs ${N.n}-wk norm ${hrs(N.hrs)} hrs / ${money(N.cost)}`+
+      (pctNow!=null?` · ${(pctNow*100).toFixed(1)}% vs ${(N.pct*100).toFixed(1)}% norm`:"")+`)</span>`+
+      (pctNow!=null&&pctNow>N.pct+0.005?(Math.abs(dh)<4&&salesChg!=null&&salesChg<-0.05?
+        ` — <span class="warn">hours didn't move; sales are ${Math.round(-salesChg*100)}% lower. That's a sales problem, not a staffing one.</span>`:
+        dh>=4?` — <span class="warn">hours were added</span>`:""):"")+`</div>`});
+  if(F.unpriced)t+=`<div class="mini">${hrs(F.unpriced)} posted hrs couldn't be priced (no rate history for the role).</div>`;
+  out.push(t);
+  // 4 labor % — last
+  out.push(`<h3>4 · Labor % against the projection <span class="dim">— most visible, least reliable</span></h3>`+(F.unposted.length?
+    `<div class="line"><span class="warn">Withheld — ${F.unposted.join(" and ")} not posted yet, so the total would read as a cut that isn't real.</span></div>`:F.proj?
+    `<div class="line">As posted ${money(F.totCost)} = <strong>${pctf(F.totCost,F.proj.v,1)}</strong> · with drift ${money(F.totExp)} = <strong>${pctf(F.totExp,F.proj.v,1)}</strong>
+      <span class="basis">against ${F.proj.committed?"committed":"<span class='warn'>suggested, not committed</span>"} ${money(F.proj.v)}${F.normSales?`, ${salesChg>=0?"+":""}${(salesChg*100).toFixed(0)}% vs ${money(F.normSales)} trailing avg`:""} · target ${state.laborTarget}%</span></div>`:
+    `<div class="line dim">No projection — commit one above.</div>`));
+  out.push(`<div class="mini" style="margin-top:8px">Comparisons, not prescriptions. Who can close a station and skill mix aren't in any file.</div>`);
+  el.innerHTML=out.join("");
+}
+
+function drawGaps(){
+  const el=document.getElementById("gapPanel");
+  const g=Object.keys(state.gaps).filter(d=>state.gaps[d]==="?").sort();
+  const done=Object.keys(state.gaps).filter(d=>state.gaps[d]!=="?").sort();
+  if(!g.length&&!done.length){el.innerHTML="";return}
+  el.innerHTML=(g.length?`<div class="alert" style="margin-top:10px"><strong>${g.length} sales day${g.length>1?"s":""} with no row inside an export's range.</strong> Nothing here is assumed closed. Confirm each once:
+    ${g.map(d=>`<div class="row" style="margin-top:5px"><span style="width:130px">${DAYS[(mk(d).getUTCDay()+6)%7]} ${fmtDateY(d)}</span>
+      <button class="sm" onclick="setGap('${d}','closed')">Closed — count $0</button>
+      <button class="sm" onclick="setGap('${d}','bad')">Bad export — leave missing</button></div>`).join("")}</div>`:"")+
+    (done.length?`<details class="mini"><summary>Confirmed days (${done.length})</summary>${done.map(d=>`${fmtDateY(d)} ${state.gaps[d]} <button class="sm" onclick="setGap('${d}','?')">undo</button>`).join(" · ")}</details>`:"");
+}
+function drawRecon(){
+  const el=document.getElementById("reconPanel"),L=laborFor(state.cur);
+  if(!L||!L.hasPay||!L.hasSched||(!L.unrecPay.length&&!L.unrecSched.length)){el.innerHTML="";return}
+  const opts=L.unrecSched.map(s=>`<option value="${esc(s.name)}">${esc(s.name)}</option>`).join("");
+  el.innerHTML=`<div class="alert b" style="margin-top:10px"><strong>Reconcile names — ${label(state.cur)}</strong>
+    <div class="mini" style="margin:3px 0 6px">Fix these before reading posted vs actual. Nothing here is counted as a finding.</div>
+    ${L.unrecPay.map(u=>`<div class="row" style="margin-top:4px"><span style="min-width:220px">Payroll: <strong>${esc(u.emp)}</strong> ${hrs(u.hrs)} hrs</span>
+      ${opts?`<select id="al_${esc(normName(u.emp)).replace(/\s/g,"_")}"><option value="">— is the same person as —</option>${opts}</select>
+      <button class="sm" onclick="linkAlias(${jsq(u.emp)})">Link</button>`:`<span class="mini">no unmatched 7shifts name this week — check spelling, or they clocked in without being on 7shifts at all</span>`}</div>`).join("")}
+    ${L.unrecSched.map(s=>`<div class="row" style="margin-top:4px"><span style="min-width:220px">7shifts: <strong>${esc(s.name)}</strong> ${hrs(s.h)} hrs posted${s.role?" ("+esc(s.role)+")":""}, no payroll</span>
+      <button class="sm" onclick="addSalaried(${jsq(s.name)},'BOH')">Salaried · BOH</button>
+      <button class="sm" onclick="addSalaried(${jsq(s.name)},'FOH/Bar')">Salaried · FOH/Bar</button>
+      <span class="mini">or link from the payroll side above, or leave it — a no-show also looks like this</span></div>`).join("")}</div>`;
+}
+function linkAlias(emp){
+  const sel=document.getElementById("al_"+normName(emp).replace(/\s/g,"_"));if(!sel||!sel.value)return;
+  state.aliases[normName(emp)]=normName(sel.value);persist();render();say("Linked "+esc(emp)+" → "+esc(sel.value));
+}
+function setRate(n){const el=document.getElementById("rt_"+normName(n).replace(/\s/g,"_")),v=num(el&&el.value);
+  if(!v||v<5||v>100){say("Enter an hourly rate, e.g. 19.50");return}
+  state.rateOverride=state.rateOverride||{};state.rateOverride[normName(n)]=v;persist();render();say(esc(n)+" priced at "+money(v,true)+"/hr until their first payroll week")}
+function markGone(n){state.departed=state.departed||[];if(!state.departed.some(x=>normName(x)===normName(n)))state.departed.push(n);
+  persist();render();say(esc(n)+" won't be flagged as missing. Undo in Settings.")}
+function addSalaried(n,d){if(salariedEntry(n))return;state.salaried.push({name:n,dept:d});persist();render();say(esc(n)+" added to the salaried list")}
+
+function drawHist(){
+  const ks=allWeekKeys().filter(k=>weekSales(k).n||peek(k).pay).reverse();
+  let h=`<table><tr><th class="lbl">Week</th><th class="lbl">Period</th><th>Net sales</th><th>Days</th><th>LY</th><th>YoY</th><th>Committed</th><th>Var</th>
+    <th>BOH %</th><th>FOH/Bar %</th><th>Hourly %</th><th>Hourly hrs</th><th>OT prem</th><th>House hrs</th></tr>`;
+  ks.forEach(k=>{const ws=weekSales(k),ly=weekSales(LY(k)),L=laborFor(k),P=peek(k).proj;
+    const ok=L&&L.pctOK;
+    h+=`<tr><td class="lbl"><a href="#" onclick="state.cur='${k}';persist(true);render();return false">${fmtDateY(k)}</a></td><td class="lbl">${label(k)}</td>
+      <td class="num">${money(ws.tot)}</td><td class="num">${ws.n}/7</td><td class="num dim">${ly.complete?money(ly.tot):"—"}</td>
+      <td class="num">${ws.complete&&ly.complete?pctf(ws.tot-ly.tot,ly.tot):"—"}</td>
+      <td class="num">${P&&P.lockedAt?money(P.orig):"—"}</td><td class="num">${P&&P.lockedAt&&ws.complete?money(r2(ws.tot-P.orig)):"—"}</td>
+      <td class="num">${ok?pctf(L.dept.BOH.pay,ws.tot,2):"—"}</td><td class="num">${ok?pctf(L.dept["FOH/Bar"].pay,ws.tot,2):"—"}</td>
+      <td class="num">${ok?`<span class="${L.pct*100<=state.laborTarget?"good":"bad"}">${(L.pct*100).toFixed(2)}%</span>`:"—"}</td>
+      <td class="num">${L&&L.hasPay?hrs(L.totHrs):"—"}</td>
+      <td class="num">${L&&L.hasPay?money(r2(Object.values(L.emp).reduce((s,e)=>s+e.otPay/3,0)),true):"—"}</td>
+      <td class="num">${L&&L.hasPay?hrs(L.house.hrs):"—"}</td></tr>`});
+  document.getElementById("histTable").innerHTML=h+`</table>`;
+}
+function drawChecks(){
+  const L=laborFor(state.cur),el=document.getElementById("dataChecks");
+  if(!L||!L.hasPay){el.innerHTML=`<div class="mini">No payroll for this week.</div>`;return}
+  const rows=peek(state.cur).pay.rows;
+  const titles={};rows.forEach(r=>{titles[r.job]=r2((titles[r.job]||0)+r.rh+r.oth)});
+  el.innerHTML=`<div class="mini">Titles this week: ${Object.keys(titles).sort().map(t=>`${esc(t)} ${hrs(titles[t])} → ${state.jobMap[t]===undefined?'<span class="bad">unmapped</span>':state.jobMap[t]===""?"excluded":state.jobMap[t]}`).join(" · ")}</div>
+    <div class="mini" style="margin-top:6px">Linked names: ${L.people.map(p=>`${esc(p.emp)} ↔ ${esc(p.sname)} <span class="dim">(${p.how})</span>`).join(" · ")}</div>
+    <div class="mini" style="margin-top:6px">Salaried on schedule: ${L.salPeople.map(s=>`${esc(s.name)} ${hrs(s.h)} (${s.dept})`).join(" · ")||"none"}</div>`;
+}
+function drawSettings(){
+  const A=state.anchor;
+  document.getElementById("aP").value=A.period;document.getElementById("aW").value=A.week;
+  document.getElementById("aD").value=A.start;document.getElementById("aV").checked=!!A.verified;
+  document.getElementById("anchorNote").innerHTML=`P1 WK1 of the current fiscal year falls on ${fmtDateY(p1Start())}. Today is ${label(monday(todayLocal()))}.`;
+  const si=document.getElementById("salIn");if(document.activeElement!==si)si.value=state.salaried.map(x=>x.name+" | "+x.dept).join("\n");
+  const hi=document.getElementById("houseIn");if(document.activeElement!==hi)hi.value=state.house.join("\n");
+  document.getElementById("houseTitles").textContent=HOUSE_TITLES.join(", ");
+  const seen=new Set(Object.keys(state.jobMap));Object.values(state.weeks).forEach(w=>{if(w.pay)w.pay.rows.forEach(r=>seen.add(r.job))});
+  document.getElementById("jobMapEd").innerHTML=`<div class="row">`+[...seen].sort().map(t=>`<label class="f">${esc(t)}<select onchange="setJob(${jsq(t)},this.value)">
+    ${["BOH","FOH/Bar",""].map(v=>`<option value="${v}" ${state.jobMap[t]===v?"selected":""}>${v||"exclude"}</option>`).join("")}
+    ${state.jobMap[t]===undefined?`<option value="?" selected>unmapped</option>`:""}</select></label>`).join("")+`</div>`;
+  const al=Object.keys(state.aliases);
+  document.getElementById("aliasEd").innerHTML=al.length?al.map(a=>`<span class="badge">${esc(a)} ↔ ${esc(state.aliases[a])} <a href="#" onclick="delete state.aliases[${jsq(a)}];persist();render();return false">✕</a></span>`).join(" "):`<span class="mini">None — names are linked automatically. Manual links you make in Reconcile appear here.</span>`;
+  const dp=state.departed||[],ro=Object.keys(state.rateOverride||{});
+  document.getElementById("aliasEd").innerHTML+=`<h3>No longer with us</h3>`+(dp.length?dp.map((n,i)=>`<span class="badge">${esc(n)} <a href="#" onclick="state.departed.splice(${i},1);persist();render();return false">✕</a></span>`).join(" "):`<span class="mini">None.</span>`)+
+    `<h3>Entered rates (new people)</h3>`+(ro.length?ro.map(k=>`<span class="badge">${esc(k)} ${money(state.rateOverride[k],true)} <a href="#" onclick="delete state.rateOverride[${jsq(k)}];persist();render();return false">✕</a></span>`).join(" "):`<span class="mini">None — once someone has a payroll week their own rate is used.</span>`);
+  document.getElementById("roleSel").value=role();document.getElementById("whoIn").value=who();
+  document.getElementById("labTgt").value=state.laborTarget;document.getElementById("cents").checked=!!state.cents;
+}
+function p1Start(){const A=state.anchor,abs=(A.period-1)*4+(A.week-1);
+  let s=addD(A.start,-7*abs);const t=monday(todayLocal());while(addD(s,364)<=t)s=addD(s,364);while(s>t)s=addD(s,-364);return s}
+function setAnchor(){
+  const d=document.getElementById("aD").value;if(!validDate(d)||monday(d)!==d){say("Anchor must be a Monday");drawSettings();return}
+  state.anchor={period:+document.getElementById("aP").value||1,week:+document.getElementById("aW").value||1,start:d,verified:false};
+  persist();render();
+}
+function setJob(t,v){if(v==="?")return;state.jobMap[t]=v;persist();render()}
+function setSalaried(txt){
+  state.salaried=txt.split("\n").map(l=>l.trim()).filter(Boolean).map(l=>{const[n,d]=l.split("|").map(x=>x.trim());
+    return{name:n,dept:/boh/i.test(d||"")?"BOH":"FOH/Bar"}});persist();render();
+}
+function setHouse(txt){state.house=txt.split("\n").map(l=>l.trim()).filter(Boolean);persist();render()}
+
+/* ══════════ minimal xlsx writer (store-only zip + OOXML, no dependencies) ══════════ */
+const CRCT=(()=>{const t=new Uint32Array(256);
+  for(let i=0;i<256;i++){let c=i;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[i]=c>>>0}return t})();
+function crc32(u8){let c=0xFFFFFFFF;for(let i=0;i<u8.length;i++)c=CRCT[(c^u8[i])&0xFF]^(c>>>8);return(c^0xFFFFFFFF)>>>0}
+function zipStore(files){
+  const enc=new TextEncoder(),parts=[],cd=[];let off=0;
+  const u16=n=>[n&255,(n>>8)&255],u32=n=>[n&255,(n>>8)&255,(n>>16)&255,(n>>>24)&255];
+  const now=new Date();
+  const dTime=((now.getHours()&31)<<11)|((now.getMinutes()&63)<<5)|((now.getSeconds()>>1)&31);
+  const dDate=((Math.max(0,now.getFullYear()-1980)&127)<<9)|(((now.getMonth()+1)&15)<<5)|(now.getDate()&31);
+  files.forEach(f=>{
+    const name=enc.encode(f.name),data=typeof f.data==="string"?enc.encode(f.data):f.data,crc=crc32(data);
+    const lh=[...u32(0x04034b50),...u16(20),...u16(0x0800),...u16(0),...u16(dTime),...u16(dDate),
+      ...u32(crc),...u32(data.length),...u32(data.length),...u16(name.length),...u16(0)];
+    parts.push(new Uint8Array(lh),name,data);
+    cd.push([...u32(0x02014b50),...u16(20),...u16(20),...u16(0x0800),...u16(0),...u16(dTime),...u16(dDate),
+      ...u32(crc),...u32(data.length),...u32(data.length),...u16(name.length),...u16(0),...u16(0),
+      ...u16(0),...u16(0),...u32(0),...u32(off),...Array.from(name)]);
+    off+=lh.length+name.length+data.length;
+  });
+  const cdArr=new Uint8Array(cd.flat());
+  const eocd=new Uint8Array([...u32(0x06054b50),...u16(0),...u16(0),...u16(files.length),
+    ...u16(files.length),...u32(cdArr.length),...u32(off),...u16(0)]);
+  let len=0;parts.forEach(p=>len+=p.length);len+=cdArr.length+eocd.length;
+  const out=new Uint8Array(len);let p=0;
+  parts.forEach(x=>{out.set(x,p);p+=x.length});out.set(cdArr,p);p+=cdArr.length;out.set(eocd,p);
+  return out;
+}
+const xe=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&apos;"}[c]));
+const colName=i=>{let s="",n=i+1;while(n>0){const m=(n-1)%26;s=String.fromCharCode(65+m)+s;n=Math.floor((n-1)/26)}return s};
+/* style ids: 1 hdr, 2 rowlabel, 3 money, 4 money-bold, 5 title, 6 text, 7 money-cents, 8 pct, 9 hours */
+function cell(r,ci,v,s){
+  const ref=colName(ci)+r;
+  if(v===null||v===undefined||v==="")return s?`<c r="${ref}" s="${s}"/>`:"";
+  if(typeof v==="number"&&isFinite(v))return `<c r="${ref}"${s?` s="${s}"`:""}><v>${v}</v></c>`;
+  return `<c r="${ref}"${s?` s="${s}"`:""} t="inlineStr"><is><t>${xe(v)}</t></is></c>`;
+}
+function sheetXml(rows,widths){
+  let x=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">`;
+  if(widths)x+=`<cols>`+widths.map((w,i)=>`<col min="${i+1}" max="${i+1}" width="${w}" customWidth="1"/>`).join("")+`</cols>`;
+  x+=`<sheetData>`;
+  rows.forEach((row,ri)=>{if(!row||!row.length)return;
+    const cells=row.map((c,ci)=>c==null?"":cell(ri+1,ci,c.v!==undefined?c.v:c,c.s)).join("");
+    if(cells)x+=`<row r="${ri+1}">${cells}</row>`});
+  return x+`</sheetData></worksheet>`;
+}
+const STYLES=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+<numFmts count="4"><numFmt numFmtId="164" formatCode="&quot;$&quot;#,##0"/>
+<numFmt numFmtId="165" formatCode="&quot;$&quot;#,##0.00"/>
+<numFmt numFmtId="166" formatCode="0.00%"/><numFmt numFmtId="167" formatCode="0.00"/></numFmts>
+<fonts count="3">
+<font><sz val="11"/><color theme="1"/><name val="Calibri"/></font>
+<font><b/><sz val="11"/><color theme="1"/><name val="Calibri"/></font>
+<font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font></fonts>
+<fills count="4">
+<fill><patternFill patternType="none"/></fill>
+<fill><patternFill patternType="gray125"/></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFE8EEF7"/><bgColor indexed="64"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FF2F5597"/><bgColor indexed="64"/></patternFill></fill></fills>
+<borders count="2"><border/>
+<border><left style="thin"><color rgb="FFB8C4D4"/></left><right style="thin"><color rgb="FFB8C4D4"/></right>
+<top style="thin"><color rgb="FFB8C4D4"/></top><bottom style="thin"><color rgb="FFB8C4D4"/></bottom></border></borders>
+<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
+<cellXfs count="10">
+<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>
+<xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center"/></xf>
+<xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1"/>
+<xf numFmtId="164" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1"/>
+<xf numFmtId="164" fontId="1" fillId="2" borderId="1" xfId="0" applyNumberFormat="1" applyFont="1" applyFill="1" applyBorder="1"/>
+<xf numFmtId="0" fontId="2" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1"/>
+<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1"/>
+<xf numFmtId="165" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1"/>
+<xf numFmtId="166" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1"/>
+<xf numFmtId="167" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1"/>
+</cellXfs>
+<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>
+</styleSheet>`;
+function xlsx(sheets){
+  const files=[],safe=n=>n.replace(/[\[\]\*\/\\\?:]/g,"-").slice(0,31),names=[];
+  sheets.forEach(s=>{let n=safe(s.name),i=2;while(names.includes(n))n=safe(s.name).slice(0,28)+"("+i+++")";names.push(n)});
+  files.push({name:"[Content_Types].xml",data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+<Default Extension="xml" ContentType="application/xml"/>
+<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
+<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>
+${sheets.map((s,i)=>`<Override PartName="/xl/worksheets/sheet${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join("")}
+</Types>`});
+  files.push({name:"_rels/.rels",data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
+</Relationships>`});
+  files.push({name:"xl/workbook.xml",data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+<sheets>${names.map((n,i)=>`<sheet name="${xe(n)}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join("")}</sheets></workbook>`});
+  files.push({name:"xl/_rels/workbook.xml.rels",data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+${sheets.map((s,i)=>`<Relationship Id="rId${i+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i+1}.xml"/>`).join("")}
+<Relationship Id="rId${sheets.length+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+</Relationships>`});
+  files.push({name:"xl/styles.xml",data:STYLES});
+  sheets.forEach((s,i)=>files.push({name:`xl/worksheets/sheet${i+1}.xml`,data:sheetXml(s.rows,s.widths)}));
+  return zipStore(files);
+}
+function exportXlsx(){
+  const ks=allWeekKeys().filter(k=>weekSales(k).n||peek(k).pay).reverse();
+  if(!ks.length){alert("No weeks to export yet.");return}
+  const H=v=>({v,s:1}),Lb=v=>({v,s:2}),M=v=>({v,s:3}),MC=v=>({v,s:7}),PC=v=>({v,s:8}),T=v=>({v,s:6}),HR=v=>({v,s:9}),E=()=>({v:"",s:6});
+  const hdr=["Week starting","Period","Net sales","Sales days","LY net sales","YoY %","Committed","Variance",
+    "BOH hrs","BOH cost","BOH %","FOH/Bar hrs","FOH/Bar cost","FOH/Bar %","Hourly cost","Hourly %","OT hrs","OT premium","House hrs"];
+  const rows=[hdr.map(H)];
+  ks.forEach(k=>{const ws=weekSales(k),ly=weekSales(LY(k)),L=laborFor(k),P=peek(k).proj,ok=L&&L.pctOK,hp=L&&L.hasPay;
+    rows.push([T(k),T(label(k)),M(ws.tot),T(ws.n+"/7"),ly.complete?M(ly.tot):E(),ws.complete&&ly.complete?PC((ws.tot-ly.tot)/ly.tot):E(),
+      P&&P.lockedAt?M(P.orig):E(),P&&P.lockedAt&&ws.complete?M(r2(ws.tot-P.orig)):E(),
+      hp?HR(L.dept.BOH.hrs):E(),hp?M(L.dept.BOH.pay):E(),ok?PC(L.dept.BOH.pay/ws.tot):E(),
+      hp?HR(L.dept["FOH/Bar"].hrs):E(),hp?M(L.dept["FOH/Bar"].pay):E(),ok?PC(L.dept["FOH/Bar"].pay/ws.tot):E(),
+      hp?M(L.totPay):E(),ok?PC(L.pct):E(),hp?HR(L.dept.BOH.ot+L.dept["FOH/Bar"].ot):E(),
+      hp?MC(r2(Object.values(L.emp).reduce((s,e)=>s+e.otPay/3,0))):E(),hp?HR(L.house.hrs):E()])});
+  const sheets=[{name:"All weeks",widths:[13,10,11,9,11,8,11,10,9,10,8,10,11,9,11,9,8,10,9],rows}];
+  ks.filter(k=>{const L=laborFor(k);return L&&L.hasPay&&L.hasSched}).slice(0,8).forEach(k=>{
+    const L=laborFor(k),r=[[{v:label(k)+" "+fmtDateY(k)+" — posted vs actual",s:5}],
+      ["Person","Dept","Posted","Actual","Diff","$","Note"].map(H)];
+    L.people.slice().sort((a,b)=>b.var-a.var).forEach(p=>r.push([Lb(p.sname),T(p.dept),HR(p.posted),HR(p.actual),HR(p.var),MC(p.dollars),T(p.notPosted?"not posted":"")]));
+    L.unrecPay.forEach(u=>r.push([Lb(u.emp),T(u.dept),E(),HR(u.hrs),E(),E(),T("not reconciled")]));
+    sheets.push({name:label(k)+" "+fmtDate(k).replace("/","-"),widths:[26,9,9,9,9,10,16],rows:r})});
+  dl("Gilbert Sales & Labor "+todayLocal()+".xlsx",new Blob([xlsx(sheets)],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));
+  say("Excel exported — "+sheets.length+" sheets. Put it in the shared Drive folder.");
+}
+
+/* ══════════ boot ══════════ */
+state=restore()||fresh();
+(function(){
+  const drop=document.getElementById("drop"),inp=document.getElementById("csvin");
+  drop.onclick=()=>inp.click();inp.onchange=()=>{ingest(inp.files);inp.value=""};
+  ["dragenter","dragover"].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.add("hot")}));
+  ["dragleave","drop"].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.remove("hot")}));
+  drop.addEventListener("drop",ev=>ingest(ev.dataTransfer.files));
+  render();
+})();
+</script>
+</body>
+</html>
