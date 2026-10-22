@@ -459,9 +459,10 @@ function laborFor(key){
   // On the schedule with hours, no payroll link, not on the salaried list. Could be a name mismatch,
   // an unlisted salaried person, or a no-show — the files can't say which, so it's asked, not counted.
   if(P)nonSal.forEach(n=>{if(!linkedS.has(n)&&sp[n].h>0)unrecSched.push({name:n,h:sp[n].h,role:mainRole(sp[n].cells)})});
-  const varD={};DEPTS.forEach(d=>varD[d]={posted:0,actual:0,over:0,under:0,overH:0,underH:0});
+  const varD={};DEPTS.forEach(d=>varD[d]={posted:0,actual:0,over:0,under:0,overH:0,underH:0,overN:0,underN:0});
   people.forEach(p=>{const V=varD[p.dept];if(!V)return;V.posted=r2(V.posted+p.posted);V.actual=r2(V.actual+p.actual);
-    if(p.var>0){V.over=r2(V.over+p.dollars);V.overH=r2(V.overH+p.var)}else{V.under=r2(V.under+p.dollars);V.underH=r2(V.underH+p.var)}});
+    if(p.var>0){V.over=r2(V.over+p.dollars);V.overH=r2(V.overH+p.var);V.overN++}
+    else if(p.var<0){V.under=r2(V.under+p.dollars);V.underH=r2(V.underH+p.var);V.underN++}});
   const totHrs=r2(DEPTS.reduce((s,d)=>s+dept[d].hrs,0)),totPay=r2(DEPTS.reduce((s,d)=>s+dept[d].pay,0));
   const ws=weekSales(key),payDays=P?P.days:0;
   const fullPay=payDays===7,pctOK=!!P&&fullPay&&ws.complete&&ws.tot>0;
@@ -867,12 +868,15 @@ function drawLabor(){
     These are kept out of posted vs actual — a missing match is a data problem, not unposted labor. Fix them in the import panel.</div>`);
   document.getElementById("labRecon").innerHTML=R.join("");
   if(!L.hasSched){["labVarDept","labPeople","labOnSched"].forEach(i=>document.getElementById(i).innerHTML="");return}
-  let v=`<table><tr><th class="lbl">Department</th><th>Posted</th><th>Actual</th><th>Over (hrs · $)</th><th>Under (hrs · $)</th><th>Net $</th><th>Gross $</th></tr>`;
-  DEPTS.forEach(d=>{const V=L.varD[d];
+  const ppl=n=>n+" "+(n===1?"person":"people");
+  let v=`<table><tr><th class="lbl">Department</th><th>Posted hrs</th><th>Worked hrs</th><th>Difference</th><th class="lbl">Worked longer than posted</th><th class="lbl">Worked shorter than posted</th></tr>`;
+  DEPTS.forEach(d=>{const V=L.varD[d],nh=r2(V.actual-V.posted),nd=r2(V.over+V.under);
     v+=`<tr><td class="lbl">${d}</td><td class="num">${hrs(V.posted)}</td><td class="num">${hrs(V.actual)}</td>
-      <td class="num">${sgn(V.overH)} · ${money(V.over)}</td><td class="num">${hrs(V.underH)} · ${money(V.under)}</td>
-      <td class="num">${money(r2(V.over+V.under))}</td><td class="num">${money(r2(V.over-V.under))}</td></tr>`});
-  v+=`</table><div class="mini" style="margin-top:4px">Net is what the schedule miss cost; gross is how far off it was in both directions. Priced at each person's weighted average rate.</div>`;
+      <td class="num"><strong class="${nh>1?"bad":nh<-1?"good":""}">${sgn(nh)} hrs · ${nd>=0?"+":""}${money(nd)}</strong></td>
+      <td class="txt">${V.overN?`${ppl(V.overN)} · ${hrs(V.overH)} hrs · ${money(V.over)}`:"—"}</td>
+      <td class="txt">${V.underN?`${ppl(V.underN)} · ${hrs(-V.underH)} hrs · ${money(-V.under)}`:"—"}</td></tr>`});
+  v+=`</table><div class="mini" style="margin-top:4px"><strong>Difference</strong> is the department total: worked minus posted, priced at each person's average rate.
+    The two right-hand columns count people separately — longer and shorter shifts cancel out in the total, so a difference near zero can still hide a schedule that was wrong person by person. Names are below.</div>`;
   document.getElementById("labVarDept").innerHTML=v;
   const off=L.people.filter(p=>Math.abs(p.var)>1).sort((a,b)=>b.var-a.var),on=L.people.filter(p=>Math.abs(p.var)<=1);
   let pp=`<table><tr><th class="lbl">Person</th><th class="lbl">Dept</th><th>Posted</th><th>Actual</th><th>Diff</th><th>$</th><th class="lbl">Note</th></tr>`;

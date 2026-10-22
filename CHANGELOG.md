@@ -1,5 +1,9 @@
 # Changelog — Clever Koi Gilbert sales & labor tracker
 
+## 2026-10-22 — v1.2
+
+- Posted vs actual by department rewritten for readability: posted, worked and the department difference first, then "worked longer than posted" and "worked shorter than posted" as people counts with hours and dollars. Removed the separate net/gross columns.
+
 ## 2026-10-22 — v1.1
 
 - New people with no payroll history can be given their real hourly rate. It's used until their first payroll week, then their own rate takes over.
